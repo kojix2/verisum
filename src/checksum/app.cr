@@ -20,6 +20,10 @@ module CheckSum
       @n_success = 0
       @n_mismatch = 0
       @n_error = 0
+
+      # It is used to clear the line
+      # true if the cursor is at the beginning of the line
+      @cleared_flag = true
     end
 
     def run
@@ -82,8 +86,6 @@ module CheckSum
 
     # Verify the MD5 checksums of the files
     def verify_checksums(records : Array(FileRecord), algorithm : Algorithm)
-      digest = Digest.new(algorithm)
-
       @n_total = records.size
       @n_success = 0
       @n_mismatch = 0
@@ -102,6 +104,14 @@ module CheckSum
         # CRYSTAL_WORKERS=16 bin/checksum -c checksum.md5
 
         spawn do
+          # If you create a new Digest object outside the spawn block
+          # and use, reset and reuse it for each file,
+          # you will get the following error:
+          #   Digest::FinalizedError: finish already called
+          # when you enable multi-threading support. (preview_mt)
+          # This may be because the `Digest` object is not thread-safe.
+
+          digest = Digest.new(algorithm)
           begin
             actual_hash_value = digest.hexfinal_file(filepath)
           rescue e
