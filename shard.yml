@@ -1,0 +1,11 @@
+name: checksum
+version: 0.1.0
+
+authors:
+  - kojix2 <2xijok@gmail.com>
+
+targets:
+  checksum:
+    main: src/cli.cr
+
+license: MIT
