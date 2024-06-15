@@ -10,8 +10,6 @@ module CheckSum
     getter parser : Parser
     getter option : Option
 
-
-
     def initialize
       @option = Option.new
       @parser = Parser.new(@option)
