@@ -81,44 +81,27 @@ module CheckSum
     def verify_checksums(records : Array(FileRecord), algorithm : Algorithm)
       digest = Digest.new(algorithm)
 
+      n_total = records.size
       n_success = 0
       n_mismatch = 0
       n_error = 0
 
       records.each_with_index do |file_record, index|
+        filepath = file_record.filepath
+        expected_hash_value = file_record.checksum
         begin
-          actual_hash_value = digest.hexfinal_file(file_record.filepath)
+          actual_hash_value = digest.hexfinal_file(filepath)
         rescue e
-          print("\x1b[2K\r") # Clear the line
-          print "(#{index + 1}/#{records.size}) "
-          print "#{e.class}".colorize(:magenta)
-          print ":\t"
-          puts file_record.filepath
-          if option.verbose
-            puts " #{e.message}".colorize(:dark_gray)
-          end
+          print_error_message(filepath, index, n_total, e)
           n_error += 1
           next
         end
-        expected_hash_value = file_record.checksum
 
         if actual_hash_value == expected_hash_value
-          print("\x1b[2K\r") # Clear the line
-          print "(#{index + 1}/#{records.size}) "
-          print "OK".colorize(:green)
-          print ":\t"
-          print file_record.filepath
+          print_ok_message(filepath, index, n_total)
           n_success += 1
         else
-          print("\x1b[2K\r") # Clear the line
-          print "(#{index + 1}/#{records.size}) "
-          print "Mismatch Error".colorize(:red)
-          print ":\t"
-          puts file_record.filepath
-          if option.verbose
-            puts " expected: #{expected_hash_value}".colorize(:dark_gray)
-            puts " actual:   #{actual_hash_value}".colorize(:dark_gray)
-          end
+          print_mismatch_message(filepath, index, n_total, expected_hash_value, actual_hash_value)
           n_mismatch += 1
         end
       end
@@ -129,6 +112,37 @@ module CheckSum
         mismatch: n_mismatch,
         error:    n_error,
       }
+    end
+
+    def print_ok_message(filepath, index, total)
+      print("\x1b[2K\r") # Clear the line
+      print "(#{index + 1}/#{total}) "
+      print "OK".colorize(:green)
+      print ":\t"
+      print filepath
+    end
+
+    def print_mismatch_message(filepath, index, total, expected_hash_value, actual_hash_value)
+      print("\x1b[2K\r") # Clear the line
+      print "(#{index + 1}/#{total}) "
+      print "Mismatch Error".colorize(:red)
+      print ":\t"
+      puts filepath
+      if option.verbose
+        puts " expected: #{expected_hash_value}".colorize(:dark_gray)
+        puts " actual:   #{actual_hash_value}".colorize(:dark_gray)
+      end
+    end
+
+    def print_error_message(filepath, index, total, error)
+      print("\x1b[2K\r") # Clear the line
+      print "(#{index + 1}/#{total}) "
+      print "#{error.class}".colorize(:magenta)
+      print ":\t"
+      puts filepath
+      if option.verbose
+        puts " #{error.message}".colorize(:dark_gray)
+      end
     end
 
     def print_result(result, elapsed_time)
