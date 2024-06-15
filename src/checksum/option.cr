@@ -11,11 +11,12 @@ module CheckSum
     SHA1
     SHA256
     SHA512
+    Unknown
   end
 
   struct Option
     property action : Action = Action::None
-    property algorithm : Algorithm = Algorithm::MD5
+    property algorithm : Algorithm = Algorithm::Unknown
     property filename : String = ""
     property verbose : Bool = false
   end

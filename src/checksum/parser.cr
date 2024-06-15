@@ -1,6 +1,8 @@
 require "option_parser"
+require "colorize"
 
 require "./option"
+require "./exception"
 
 module CheckSum
   class Parser
@@ -8,26 +10,26 @@ module CheckSum
       @opt = OptionParser.new
       @opt.banner = "Usage: checksum [options]"
 
-      @opt.on("-a", "--algorithm ALGORITHM", "(md5|sha1|sha256|sha512)") do |algorithm|
-        @option.algorithm = \
-           case algorithm.downcase
-         when "md5"
-           Algorithm::MD5
-         when "sha1"
-           Algorithm::SHA1
-         when "sha256"
-           Algorithm::SHA256
-         when "sha512"
-           Algorithm::SHA512
-         else
-           e = ArgumentError.new("Unknown algorithm: #{algorithm}")
-           raise e
-         end
-      end
-
       @opt.on("-c", "--check FILE", "Read checksums from the FILE (required)") do |n|
         @option.action = Action::Check
         @option.filename = n
+      end
+
+      @opt.on("-a", "--algorithm ALGORITHM", "(md5|sha1|sha256|sha512)") do |algorithm|
+        @option.algorithm =
+          case algorithm.downcase
+          when "md5"
+            Algorithm::MD5
+          when "sha1"
+            Algorithm::SHA1
+          when "sha256"
+            Algorithm::SHA256
+          when "sha512"
+            Algorithm::SHA512
+          else
+            e = ArgumentError.new("Unknown algorithm: #{algorithm}")
+            raise e
+          end
       end
 
       @opt.on("-v", "--verbose", "Verbose mode [false]") do

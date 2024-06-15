@@ -1,12 +1,9 @@
-require "digest/md5"
-require "digest/sha1"
-require "digest/sha256"
-require "digest/sha512"
 require "colorize"
 
 require "./parser"
 require "./option"
 require "./file_record"
+require "./digest"
 
 module CheckSum
   class App
@@ -54,8 +51,14 @@ module CheckSum
       @start_time = Time.utc
       filename = option.filename
       algorithm = option.algorithm
-      Dir.cd File.dirname(filename)
+      if algorithm == Algorithm::Unknown
+        algorithm = Digest.guess_algorithm(filename)
+        if option.verbose
+          puts "[checksum] Guessed algorithm: #{algorithm}".colorize(:dark_gray)
+        end
+      end
       records = parse_checksum_file(filename)
+      Dir.cd File.dirname(filename)
       verify_checksums(records, algorithm)
     end
 
@@ -73,19 +76,7 @@ module CheckSum
 
     # Verify the MD5 checksums of the files
     def verify_checksums(records : Array(FileRecord), algorithm : Algorithm)
-      digest = \
-         case algorithm
-       when Algorithm::MD5
-         Digest::MD5.new
-       when Algorithm::SHA1
-         Digest::SHA1.new
-       when Algorithm::SHA256
-         Digest::SHA256.new
-       when Algorithm::SHA512
-         Digest::SHA512.new
-       else
-         raise CheckSumError.new("Unknown algorithm: #{algorithm}")
-       end
+      digest = Digest.new(algorithm)
 
       n_success = 0
       n_mismatch = 0
@@ -93,14 +84,16 @@ module CheckSum
 
       records.each_with_index do |file_record, index|
         begin
-          actual_md5 = digest.file(file_record.filepath).hexfinal
+          actual_md5 = digest.hexfinal_file(file_record.filepath)
         rescue e
           print("\x1b[2K\r") # Clear the line
           print "(#{index + 1}/#{records.size}) "
           print "#{e.class}".colorize(:magenta)
           print ":\t"
           puts file_record.filepath
-          puts " #{e.message}"
+          if option.verbose
+            puts " #{e.message}".colorize(:dark_gray)
+          end
           n_error += 1
           next
         end
@@ -125,20 +118,21 @@ module CheckSum
           end
           n_mismatch += 1
         end
-
-        digest.reset
       end
 
       print("\x1b[2K\r") # Clear the line
       # Print the result
       print "#{records.size}"
-      print " files, "
-      print "#{n_success}"
-      print " success, "
-      print "#{n_mismatch}"
-      print " mismatch, "
-      print "#{n_error}"
-      print " errors"
+      print " files"
+      print ", "
+      print "#{n_success}".colorize(:green)
+      print " success".colorize(:green)
+      print ", "
+      print "#{n_mismatch}".colorize(:red)
+      print " mismatch".colorize(:red)
+      print ", "
+      print "#{n_error}".colorize(:magenta)
+      print " errors".colorize(:magenta)
       puts
 
       return {success: n_success, mismatch: n_mismatch, error: n_error}
