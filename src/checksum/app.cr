@@ -108,6 +108,10 @@ module CheckSum
         actual_hash_value = nil
         error = nil
 
+        # Try to make use of the parallelism
+        # `shards build --release -Dpreview_mt`
+        # CRYSTAL_WORKERS=16 bin/checksum -c checksum.md5
+
         spawn do
           begin
             actual_hash_value = digest.hexfinal_file(filepath)
@@ -120,6 +124,7 @@ module CheckSum
         end
       end
 
+      # Wait for all the results
       @n_total.times do
         r = channel.receive
         print_message(r)
@@ -208,6 +213,9 @@ module CheckSum
 
     def print_version
       puts "checksum #{VERSION}"
+      {% if flag?(:preview_mt) %}
+        puts "  with multi-threading support"
+      {% end %}
     end
 
     def print_help
