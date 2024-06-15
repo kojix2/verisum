@@ -48,18 +48,21 @@ module CheckSum
     end
 
     def main_run
-      @start_time = Time.utc
-      filename = option.filename
-      algorithm = option.algorithm
-      if algorithm == Algorithm::AUTO
-        algorithm = Digest.guess_algorithm(filename)
-        if option.verbose
-          puts "[checksum] Guessed algorithm: #{algorithm}".colorize(:dark_gray)
+      results = nil
+      elapsed_time = Time.measure do
+        filename = option.filename
+        algorithm = option.algorithm
+        if algorithm == Algorithm::AUTO
+          algorithm = Digest.guess_algorithm(filename)
+          if option.verbose
+            puts "[checksum] Guessed algorithm: #{algorithm}".colorize(:dark_gray)
+          end
         end
+        records = parse_checksum_file(filename)
+        Dir.cd File.dirname(filename)
+        results = verify_checksums(records, algorithm)
       end
-      records = parse_checksum_file(filename)
-      Dir.cd File.dirname(filename)
-      verify_checksums(records, algorithm)
+      print_result(results, elapsed_time) unless results.nil?
     end
 
     # Read the checksum file and parse each line into records
@@ -120,22 +123,34 @@ module CheckSum
         end
       end
 
+      return {
+        total:    records.size,
+        success:  n_success,
+        mismatch: n_mismatch,
+        error:    n_error,
+      }
+    end
+
+    def print_result(result, elapsed_time)
       print("\x1b[2K\r") # Clear the line
+
       # Print the result
-      print "#{records.size}"
+      print "#{result[:total]}"
       print " files"
       print ", "
-      print "#{n_success}".colorize(:green)
+      print "#{result[:success]}".colorize(:green)
       print " success".colorize(:green)
       print ", "
-      print "#{n_mismatch}".colorize(:red)
+      print "#{result[:mismatch]}".colorize(:red)
       print " mismatch".colorize(:red)
       print ", "
-      print "#{n_error}".colorize(:magenta)
+      print "#{result[:error]}".colorize(:magenta)
       print " errors".colorize(:magenta)
-      puts
 
-      return {success: n_success, mismatch: n_mismatch, error: n_error}
+      # Print the elapsed time
+      print "  (#{format_time_span(elapsed_time)})"
+
+      puts
     end
 
     def print_version
@@ -144,6 +159,17 @@ module CheckSum
 
     def print_help
       puts parser.help
+    end
+
+    private def format_time_span(span : Time::Span)
+      total_seconds = span.total_seconds
+      if total_seconds < 60
+        return "#{total_seconds.round(2)} seconds"
+      end
+
+      minutes = span.total_minutes
+      seconds = span.seconds
+      "#{minutes}:#{seconds < 10 ? "0" : ""}#{seconds} minutes"
     end
   end
 end

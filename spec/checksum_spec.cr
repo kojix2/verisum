@@ -1,7 +1,7 @@
 require "./spec_helper"
 
 NUM_FILES       = 5
-EXPECTED_RESULT = {success: 3, mismatch: 1, error: 1}
+EXPECTED_RESULT = {total: 5, success: 3, mismatch: 1, error: 1}
 
 describe CheckSum do
   it "has a version number" do
