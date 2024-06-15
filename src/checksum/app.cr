@@ -87,7 +87,7 @@ module CheckSum
 
       records.each_with_index do |file_record, index|
         begin
-          actual_md5 = digest.hexfinal_file(file_record.filepath)
+          actual_hash_value = digest.hexfinal_file(file_record.filepath)
         rescue e
           print("\x1b[2K\r") # Clear the line
           print "(#{index + 1}/#{records.size}) "
@@ -100,9 +100,9 @@ module CheckSum
           n_error += 1
           next
         end
-        expected_md5 = file_record.checksum
+        expected_hash_value = file_record.checksum
 
-        if actual_md5 == expected_md5
+        if actual_hash_value == expected_hash_value
           print("\x1b[2K\r") # Clear the line
           print "(#{index + 1}/#{records.size}) "
           print "OK".colorize(:green)
@@ -116,8 +116,8 @@ module CheckSum
           print ":\t"
           puts file_record.filepath
           if option.verbose
-            puts " expected: #{expected_md5}".colorize(:dark_gray)
-            puts " actual:   #{actual_md5}".colorize(:dark_gray)
+            puts " expected: #{expected_hash_value}".colorize(:dark_gray)
+            puts " actual:   #{actual_hash_value}".colorize(:dark_gray)
           end
           n_mismatch += 1
         end
