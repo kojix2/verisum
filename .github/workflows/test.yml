@@ -23,7 +23,7 @@ jobs:
       - name: Install dependencies
         run: shards install --without-development --release
       - name: Run tests
-        run: crystal spec
+        run: crystal spec -Dpreview_mt
       - name: Build executable
         run: shards build --release -Dpreview_mt
       - name: Run executable (help)
