@@ -4,9 +4,8 @@ require "./option"
 
 module CheckSum
   class Parser
-    def initialize
+    def initialize(@option : Option)
       @opt = OptionParser.new
-      @option = Option.new
       @opt.banner = "Usage: checksum [options]"
 
       @opt.on("-a", "--algorithm ALGORITHM", "(md5|sha1|sha256|sha512)") do |algorithm|

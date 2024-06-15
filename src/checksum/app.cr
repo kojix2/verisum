@@ -13,9 +13,22 @@ module CheckSum
     getter parser : Parser
     getter option : Option
 
+    # It can change the output to a stream for testing
+    property output : IO = STDOUT
+
+    # Override the default output stream
+    def print(*args)
+      output.print(*args)
+    end
+
+    # Override the default output stream
+    def puts(*args)
+      output.puts(*args)
+    end
+
     def initialize
-      @parser = Parser.new
-      @option = Option.new # Just for avoiding nil error
+      @option = Option.new
+      @parser = Parser.new(@option)
     end
 
     def run
@@ -127,6 +140,8 @@ module CheckSum
       print "#{n_error}"
       print " errors"
       puts
+
+      return {success: n_success, mismatch: n_mismatch, error: n_error}
     end
 
     def print_version

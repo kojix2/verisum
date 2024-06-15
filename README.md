@@ -1,6 +1,8 @@
 # checksum
 
-My personal tool to show md5sum -c or sha256sum -c a little more prettily
+[![test](https://github.com/kojix2/checksum.cr/actions/workflows/test.yml/badge.svg)](https://github.com/kojix2/checksum.cr/actions/workflows/test.yml)
+
+My personal tool to show `md5sum -c` or `sha256sum -c` a little more prettily
 
 ## Installation
 
