@@ -25,7 +25,7 @@ jobs:
       - name: Run tests
         run: crystal spec
       - name: Build executable
-        run: shards build --release
+        run: shards build --release -Dpreview_mt
       - name: Run executable (help)
         run: bin/checksum --help
       - uses: actions/upload-artifact@v4
