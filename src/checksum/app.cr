@@ -26,6 +26,11 @@ module CheckSum
     def initialize
       @option = Option.new
       @parser = Parser.new(@option)
+
+      @n_total = 0
+      @n_success = 0
+      @n_mismatch = 0
+      @n_error = 0
     end
 
     def run
@@ -77,41 +82,75 @@ module CheckSum
       records
     end
 
+    def verify_checksum(filepath, expected_hash_value, digest)
+      begin
+        actual_hash_value = digest.hexfinal_file(filepath)
+      rescue e
+      end
+    end
+
+    record Result1, index : Int32, filepath : (String | Path), expected : String?, actual : String?, error : Exception?
+
     # Verify the MD5 checksums of the files
     def verify_checksums(records : Array(FileRecord), algorithm : Algorithm)
       digest = Digest.new(algorithm)
 
-      n_total = records.size
-      n_success = 0
-      n_mismatch = 0
-      n_error = 0
+      @n_total = records.size
+      @n_success = 0
+      @n_mismatch = 0
+      @n_error = 0
+
+      channel = Channel(Result1).new(16)
 
       records.each_with_index do |file_record, index|
         filepath = file_record.filepath
         expected_hash_value = file_record.checksum
-        begin
-          actual_hash_value = digest.hexfinal_file(filepath)
-        rescue e
-          print_error_message(filepath, index, n_total, e)
-          n_error += 1
-          next
-        end
+        actual_hash_value = nil
+        error = nil
 
-        if actual_hash_value == expected_hash_value
-          print_ok_message(filepath, index, n_total)
-          n_success += 1
-        else
-          print_mismatch_message(filepath, index, n_total, expected_hash_value, actual_hash_value)
-          n_mismatch += 1
+        spawn do
+          begin
+            actual_hash_value = digest.hexfinal_file(filepath)
+          rescue e
+            error = e
+          end
+
+          r1 = Result1.new(index, filepath, expected_hash_value, actual_hash_value, error)
+          channel.send(r1)
         end
       end
 
+      @n_total.times do
+        r = channel.receive
+        print_message(r)
+      end
+
       return {
-        total:    records.size,
-        success:  n_success,
-        mismatch: n_mismatch,
-        error:    n_error,
+        total:    @n_total,
+        success:  @n_success,
+        mismatch: @n_mismatch,
+        error:    @n_error,
       }
+    end
+
+    def print_message(r1)
+      filepath = r1.filepath
+      index = r1.index
+      total = @n_total
+      expected_hash_value = r1.expected
+      actual_hash_value = r1.actual
+      error = r1.error
+
+      if error
+        print_error_message(filepath, index, total, error)
+        @n_error += 1
+      elsif expected_hash_value == actual_hash_value
+        print_ok_message(filepath, index, total)
+        @n_success += 1
+      else
+        print_mismatch_message(filepath, index, total, expected_hash_value, actual_hash_value)
+        @n_mismatch += 1
+      end
     end
 
     def print_ok_message(filepath, index, total)
