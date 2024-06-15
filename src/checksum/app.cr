@@ -10,18 +10,7 @@ module CheckSum
     getter parser : Parser
     getter option : Option
 
-    # It can change the output to a stream for testing
-    property output : IO = STDOUT
 
-    # Override the default output stream
-    def print(*args)
-      output.print(*args)
-    end
-
-    # Override the default output stream
-    def puts(*args)
-      output.puts(*args)
-    end
 
     def initialize
       @option = Option.new

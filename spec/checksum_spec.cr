@@ -1,5 +1,22 @@
 require "./spec_helper"
 
+module CheckSum
+  class App
+    # It can change the output to a stream for testing
+    property output : IO = STDOUT
+
+    # Override the default output stream
+    def print(*args)
+      output.print(*args)
+    end
+
+    # Override the default output stream
+    def puts(*args)
+      output.puts(*args)
+    end
+  end
+end
+
 NUM_FILES       = 5
 EXPECTED_RESULT = {total: 5, success: 3, mismatch: 1, error: 1}
 
