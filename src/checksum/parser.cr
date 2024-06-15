@@ -15,7 +15,7 @@ module CheckSum
         @option.filename = n
       end
 
-      @opt.on("-a", "--algorithm ALGORITHM", "(md5|sha1|sha256|sha512|auto)") do |algorithm|
+      @opt.on("-a", "--algorithm ALGORITHM", "(md5|sha1|sha256|sha512) [auto]") do |algorithm|
         @option.algorithm =
           case algorithm.downcase
           when "md5"
