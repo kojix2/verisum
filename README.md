@@ -31,6 +31,18 @@ Usage: checksum [options]
     --version                        Show version
 ```
 
+### Experimental multi-threading support
+
+This feature is very experimental and may not work properly.
+
+```sh
+git clone https://github.com/kojix2/checksum.cr
+cd checksum
+shards build --release -Dpreview_mt
+cp bin/checksum /usr/local/bin/
+CRYSTAL_WORKERS=2 checksum -c md5sum.txt
+```
+
 ## Development
 
 Pull requests are welcome.
