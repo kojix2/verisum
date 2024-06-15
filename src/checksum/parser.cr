@@ -36,6 +36,10 @@ module CheckSum
         @option.verbose = true
       end
 
+      @opt.on("--no-clear", "Do not clear the line [false]") do
+        @option.clear_line = false
+      end
+
       @opt.on("--no-color", "Do not use color [false]") do
         Colorize.enabled = false
       end

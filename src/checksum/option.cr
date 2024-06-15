@@ -18,6 +18,7 @@ module CheckSum
     property action : Action = Action::None
     property algorithm : Algorithm = Algorithm::AUTO
     property filename : String = ""
+    property clear_line : Bool = true
     property verbose : Bool = false
   end
 end

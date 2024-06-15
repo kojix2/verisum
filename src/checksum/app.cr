@@ -148,15 +148,16 @@ module CheckSum
     end
 
     def print_ok_message(filepath, index, total)
-      print("\x1b[2K\r") # Clear the line
+      print_clear_the_line
       print "(#{index + 1}/#{total}) "
       print "OK".colorize(:green)
       print ":\t"
       print filepath
+      @cleared_flag = false
     end
 
     def print_mismatch_message(filepath, index, total, expected_hash_value, actual_hash_value)
-      print("\x1b[2K\r") # Clear the line
+      print_clear_the_line
       print "(#{index + 1}/#{total}) "
       print "Mismatch Error".colorize(:red)
       print ":\t"
@@ -165,10 +166,11 @@ module CheckSum
         puts " expected: #{expected_hash_value}".colorize(:dark_gray)
         puts " actual:   #{actual_hash_value}".colorize(:dark_gray)
       end
+      @cleared_flag = true
     end
 
     def print_error_message(filepath, index, total, error)
-      print("\x1b[2K\r") # Clear the line
+      print_clear_the_line
       print "(#{index + 1}/#{total}) "
       print "#{error.class}".colorize(:magenta)
       print ":\t"
@@ -176,10 +178,11 @@ module CheckSum
       if option.verbose
         puts " #{error.message}".colorize(:dark_gray)
       end
+      @cleared_flag = true
     end
 
     def print_result(result, elapsed_time)
-      print("\x1b[2K\r") # Clear the line
+      print_clear_the_line
 
       # Print the result
       print "#{result[:total]}"
@@ -209,6 +212,15 @@ module CheckSum
 
     def print_help
       puts parser.help
+    end
+
+    private def print_clear_the_line
+      return if @cleared_flag
+      if option.clear_line
+        print("\x1b[2K\r")
+      else
+        puts
+      end
     end
 
     private def format_time_span(span : Time::Span)
