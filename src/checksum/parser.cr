@@ -15,7 +15,7 @@ module CheckSum
         @option.filename = n
       end
 
-      @opt.on("-a", "--algorithm ALGORITHM", "(md5|sha1|sha256|sha512)") do |algorithm|
+      @opt.on("-a", "--algorithm ALGORITHM", "(md5|sha1|sha256|sha512|auto)") do |algorithm|
         @option.algorithm =
           case algorithm.downcase
           when "md5"
@@ -36,19 +36,19 @@ module CheckSum
         @option.verbose = true
       end
 
-      @opt.on("-C", "--no-color", "Do not use color [false]") do
+      @opt.on("--no-color", "Do not use color [false]") do
         Colorize.enabled = false
       end
 
-      @opt.on("-d", "--debug", "Debug mode [false]") do
+      @opt.on("--debug", "Debug mode [false]") do
         CheckSumError.debug = true
       end
 
-      @opt.on("-h", "--help", "Show this message") do
+      @opt.on("--help", "Show this message") do
         @option.action = Action::Help
       end
 
-      @opt.on("-V", "--version", "Show version") do
+      @opt.on("--version", "Show version") do
         @option.action = Action::Version
       end
 

@@ -51,7 +51,7 @@ module CheckSum
       @start_time = Time.utc
       filename = option.filename
       algorithm = option.algorithm
-      if algorithm == Algorithm::Unknown
+      if algorithm == Algorithm::AUTO
         algorithm = Digest.guess_algorithm(filename)
         if option.verbose
           puts "[checksum] Guessed algorithm: #{algorithm}".colorize(:dark_gray)
