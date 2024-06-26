@@ -204,7 +204,18 @@ module CheckSum
       print "(#{index + 1}/#{total}) "
       print "Mismatch Error".colorize(:red)
       print ":\t"
-      puts filepath
+      print filepath
+
+      # Check if file is or very small
+      # This is useful when the file is empty
+      case File.size(filepath)
+      when 0..100
+        print "\t"
+        print "(#{File.size(filepath)} bytes)".colorize(:dark_gray)
+      end
+
+      puts
+
       if option.verbose
         puts " expected: #{expected_hash_value}".colorize(:dark_gray)
         puts " actual:   #{actual_hash_value}".colorize(:dark_gray)
