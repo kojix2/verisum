@@ -22,12 +22,18 @@ jobs:
           crystal: latest
       - name: Install dependencies
         run: shards install --without-development --release
-      - name: Run tests
+      - name: Run tests with preview_mt (multi-threading)
         run: crystal spec -Dpreview_mt
+      - name: Run tests without preview_mt (default)
+        run: crystal spec
       - name: Build executable
         run: shards build --release -Dpreview_mt
       - name: Run executable (help)
-        run: bin/checksum --help
+        run: bin/checksum --help && bin/checksum --version
+      - name: Build executable (without preview_mt)
+        run: shards build --release 
+      - name: Run executable (help)
+        run: bin/checksum --help && bin/checksum --version
       - uses: actions/upload-artifact@v4
         with:
           name: checksum-cli-${{ matrix.os }}
