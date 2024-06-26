@@ -185,6 +185,9 @@ module CheckSum
         print_mismatch_message(filepath, index, total, expected_hash_value, actual_hash_value)
         @n_mismatch += 1
       end
+  
+      # Flush the output
+      STDOUT.flush
     end
 
     def print_ok_message(filepath, index, total)
