@@ -50,11 +50,12 @@ module CheckSum
         algorithm = option.algorithm
         if algorithm == Algorithm::AUTO
           algorithm = Digest.guess_algorithm(filename)
-          if option.verbose
-            puts "[checksum] Guessed algorithm: #{algorithm}".colorize(:dark_gray)
-          end
         end
         records = parse_checksum_file(filename)
+        puts "#{records.size} files in #{filename}"
+        if option.verbose
+          puts "[checksum] Guessed algorithm: #{algorithm}".colorize(:dark_gray)
+        end
         Dir.cd File.dirname(filename)
         results = verify_checksums(records, algorithm)
       end
