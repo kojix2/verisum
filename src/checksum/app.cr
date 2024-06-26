@@ -47,6 +47,7 @@ module CheckSum
       results = nil
       elapsed_time = Time.measure do
         filename = option.filename
+        filename = File.expand_path(filename) if option.absolute_path
         algorithm = option.algorithm
         if algorithm == Algorithm::AUTO
           algorithm = Digest.guess_algorithm(filename)
@@ -166,6 +167,8 @@ module CheckSum
 
     def count_and_print_message(r1)
       filepath = r1.filepath
+      filepath = File.expand_path(filepath) if option.absolute_path
+
       index = r1.index
       total = @n_total
       expected_hash_value = r1.expected

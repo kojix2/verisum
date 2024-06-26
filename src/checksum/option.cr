@@ -20,5 +20,6 @@ module CheckSum
     property filename : String = ""
     property clear_line : Bool = true
     property verbose : Bool = false
+    property absolute_path : Bool = false
   end
 end

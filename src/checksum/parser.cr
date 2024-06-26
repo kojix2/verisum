@@ -32,7 +32,11 @@ module CheckSum
           end
       end
 
-      @opt.on("-v", "--verbose", "Verbose mode [false]") do
+      @opt.on("-A", "--absolute", "Output absolute path [false]") do
+        @option.absolute_path = true
+      end
+
+      @opt.on("-v", "--verbose", "Verbose mode for outputting checksums and errors.") do
         @option.verbose = true
       end
 
