@@ -53,7 +53,7 @@ module CheckSum
           algorithm = Digest.guess_algorithm(filename)
         end
         records = parse_checksum_file(filename)
-        puts "#{records.size} files in #{filename}"
+        puts "#{records.size} files in #{filename.colorize.bold}"
         if option.verbose
           puts "[checksum] Guessed algorithm: #{algorithm}".colorize(:dark_gray)
         end
