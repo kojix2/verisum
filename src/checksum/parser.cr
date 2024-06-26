@@ -48,7 +48,7 @@ module CheckSum
         CheckSumError.debug = true
       end
 
-      @opt.on("--help", "Show this message") do
+      @opt.on("-h", "--help", "Show this message") do
         @option.action = Action::Help
       end
 
