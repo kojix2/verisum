@@ -89,7 +89,13 @@ module CheckSum
       @n_mismatch = 0
       @n_error = 0
 
-      channel = Channel(Result1).new(16)
+      {% if flag?(:preview_mt) %}
+        channel = Channel(Result1).new(16)
+      {% else %}
+        # When multi-threading support is disabled
+        # the `digest` object will be reused for each file
+        digest = Digest.new(algorithm)
+      {% end %}
 
       records.each_with_index do |file_record, index|
         filepath = file_record.filepath
@@ -101,31 +107,53 @@ module CheckSum
         # `shards build --release -Dpreview_mt`
         # CRYSTAL_WORKERS=16 bin/checksum -c checksum.md5
 
-        spawn do
-          # If you create a new Digest object outside the spawn block
-          # and use, reset and reuse it for each file,
-          # you will get the following error:
-          #   Digest::FinalizedError: finish already called
-          # when you enable multi-threading support. (preview_mt)
-          # This may be because the `Digest` object is not thread-safe.
+        {% if flag?(:preview_mt) %}
+          spawn do
+            # If you create a new Digest object outside the spawn block
+            # and use, reset and reuse it for each file,
+            # you will get the following error:
+            #   Digest::FinalizedError: finish already called
+            # when you enable multi-threading support. (preview_mt)
+            # This may be because the `Digest` object is not thread-safe.
 
-          digest = Digest.new(algorithm)
+            digest = Digest.new(algorithm)
+            begin
+              actual_hash_value = digest.hexfinal_file(filepath)
+            rescue e
+              error = e
+              # Do not need to reset the digest object
+              # because it will be created again for the next file
+            end
+
+            r1 = Result1.new(index, filepath, expected_hash_value, actual_hash_value, error)
+
+            channel.send(r1)
+          end
+        {% else %}
           begin
             actual_hash_value = digest.hexfinal_file(filepath)
           rescue e
             error = e
+          ensure
+            # Reset the digest object
+            digest.reset
           end
 
           r1 = Result1.new(index, filepath, expected_hash_value, actual_hash_value, error)
-          channel.send(r1)
-        end
+
+          count_and_print_message(r1)
+        {% end %}
       end
 
       # Wait for all the results
-      @n_total.times do
-        r = channel.receive
-        print_message(r)
-      end
+      # FIXME: https://forum.crystal-lang.org/t/6936
+
+      {% if flag?(:preview_mt) %}
+        @n_total.times do
+          r = channel.receive
+          count_and_print_message(r)
+        end
+      {% end %}
 
       return {
         total:    @n_total,
@@ -135,7 +163,7 @@ module CheckSum
       }
     end
 
-    def print_message(r1)
+    def count_and_print_message(r1)
       filepath = r1.filepath
       index = r1.index
       total = @n_total
