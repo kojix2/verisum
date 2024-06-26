@@ -2,7 +2,7 @@
 
 [![test](https://github.com/kojix2/checksum.cr/actions/workflows/test.yml/badge.svg)](https://github.com/kojix2/checksum.cr/actions/workflows/test.yml)
 
-My personal tool to show `md5sum -c` or `sha256sum -c` a little more prettily
+Make `md5sum -c` or `sha256sum -c` prettier.
 
 ## Installation
 
@@ -23,17 +23,18 @@ checksum -c md5sum.txt
 Usage: checksum [options]
     -c, --check FILE                 Read checksums from the FILE (required)
     -a, --algorithm ALGORITHM        (md5|sha1|sha256|sha512) [auto]
-    -v, --verbose                    Verbose mode [false]
+    -A, --absolute                   Output absolute path [false]
+    -v, --verbose                    Verbose mode for outputting checksums and errors.
     --no-clear                       Do not clear the line [false]
     --no-color                       Do not use color [false]
     --debug                          Debug mode [false]
-    --help                           Show this message
+    -h, --help                       Show this message
     --version                        Show version
 ```
 
-### Experimental multi-threading support
+### Experimental multi-threading support (preview)
 
-This feature is very experimental and may not work properly.
+This feature may not work properly.
 
 ```sh
 git clone https://github.com/kojix2/checksum.cr
