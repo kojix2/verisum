@@ -47,5 +47,9 @@ module CheckSum
     def hexfinal_file(filename : String | Path) : String
       @digest.file(filename).hexfinal
     end
+
+    def reset
+      @digest.reset
+    end
   end
 end
