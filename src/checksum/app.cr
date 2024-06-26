@@ -274,7 +274,7 @@ module CheckSum
 
       minutes = span.total_minutes
       seconds = span.seconds
-      "#{minutes}:#{seconds < 10 ? "0" : ""}#{seconds} minutes"
+      "#{"%d" % minutes.floor}:#{seconds < 10 ? "0" : ""}#{seconds} minutes"
     end
   end
 end
