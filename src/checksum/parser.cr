@@ -8,7 +8,14 @@ module CheckSum
   class Parser
     def initialize(@option : Option)
       @opt = OptionParser.new
-      @opt.banner = "Usage: checksum [options]"
+      @opt.banner = <<-BANNER
+
+        Program: checksum
+        Version: #{VERSION}
+        Source:  #{SOURCE}
+
+        Usage: checksum [options]
+      BANNER
 
       @opt.on("-c", "--check FILE", "Read checksums from the FILE (required)") do |n|
         @option.action = Action::Check
@@ -36,7 +43,7 @@ module CheckSum
         @option.absolute_path = true
       end
 
-      @opt.on("-v", "--verbose", "Verbose mode for outputting checksums and errors.") do
+      @opt.on("-v", "--verbose", "Output checksums and errors, etc [false]") do
         @option.verbose = true
       end
 
