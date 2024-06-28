@@ -22,6 +22,8 @@ module CheckSum
       # It is used to clear the line
       # true if the cursor is at the beginning of the line
       @cleared_flag = true
+
+      @exit_code = 0
     end
 
     def run
@@ -38,6 +40,7 @@ module CheckSum
       else
         print_help
       end
+      exit(@exit_code)
     rescue ex
       error_message = "[checksum] ERROR: #{ex.class} #{ex.message}"
       error_message += "\n#{ex.backtrace.join("\n")}" if CheckSumError.debug
@@ -114,12 +117,15 @@ module CheckSum
         end
       end
       records
+      # rescue
+      #  raise CheckSumError.new("Failed to read the checksum file: #{filename}")
     end
 
     def verify_checksum(filepath, expected_hash_value, digest)
       begin
         actual_hash_value = digest.hexfinal_file(filepath)
       rescue e
+        # FIXME
       end
     end
 
