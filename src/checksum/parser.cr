@@ -17,9 +17,8 @@ module CheckSum
         Usage: checksum [options]
       BANNER
 
-      @opt.on("-c", "--check FILE", "Read checksums from the FILE (required)") do |n|
+      @opt.on("-c", "--check", "Check the checksum") do
         @option.action = Action::Check
-        @option.filename = n
       end
 
       @opt.on("-a", "--algorithm ALGORITHM", "(md5|sha1|sha256|sha512) [auto]") do |algorithm|
@@ -76,6 +75,7 @@ module CheckSum
 
     def parse(argv)
       @opt.parse(argv)
+      @option.filenames = argv
       @option
     end
 

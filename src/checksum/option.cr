@@ -1,5 +1,6 @@
 module CheckSum
   enum Action
+    Calculate
     Check
     Version
     Help
@@ -17,7 +18,7 @@ module CheckSum
   struct Option
     property action : Action = Action::None
     property algorithm : Algorithm = Algorithm::AUTO
-    property filename : String = ""
+    property filenames : Array(String) = [] of String
     property clear_line : Bool = true
     property verbose : Bool = false
     property absolute_path : Bool = false

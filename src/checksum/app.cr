@@ -27,6 +27,8 @@ module CheckSum
     def run
       @option = parser.parse(ARGV)
       case option.action
+      when Action::Calculate
+        # Not implemented yet
       when Action::Check
         main_run
       when Action::Version
@@ -44,9 +46,14 @@ module CheckSum
     end
 
     def main_run
+      option.filenames.each do |filename|
+        main_run(filename)
+      end
+    end
+
+    def main_run(filename : String)
       results = nil
       elapsed_time = Time.measure do
-        filename = option.filename
         filename = File.expand_path(filename) if option.absolute_path
         algorithm = option.algorithm
         if algorithm == Algorithm::AUTO
@@ -57,8 +64,9 @@ module CheckSum
         if option.verbose
           puts "[checksum] Guessed algorithm: #{algorithm}".colorize(:dark_gray)
         end
-        Dir.cd File.dirname(filename)
-        results = verify_checksums(records, algorithm)
+        Dir.cd(File.dirname(filename)) do
+          results = verify_checksums(records, algorithm)
+        end
       end
       print_result(results, elapsed_time) unless results.nil?
     end
