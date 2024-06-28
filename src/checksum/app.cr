@@ -28,9 +28,9 @@ module CheckSum
       @option = parser.parse(ARGV)
       case option.action
       when Action::Calculate
-        # Not implemented yet
+        main_run_calculate
       when Action::Check
-        main_run
+        main_run_check
       when Action::Version
         print_version
       when Action::Help
@@ -45,13 +45,46 @@ module CheckSum
       exit(1)
     end
 
-    def main_run
-      option.filenames.each do |filename|
-        main_run(filename)
+    def main_run_calculate
+      elapsed_time = Time.measure do
+        option.filenames.each do |filename|
+          main_run_calculate(filename)
+        end
+      end
+
+      if option.verbose
+        STDERR.puts "[checksum] (#{format_time_span(elapsed_time)})".colorize(:dark_gray)
       end
     end
 
-    def main_run(filename : String)
+    def main_run_calculate(filename : String)
+      filename = File.expand_path(filename) if option.absolute_path
+      algorithm = option.algorithm
+      # FIXME
+      # There are some cases to consider:
+      # - If the file does not exist, it should not be calculated
+      # - If the file is a symlink, it should not be calculated ?
+      # - If the file is a directory, it should not be calculated ?
+      # - Recursive calculation of files in the directory ?
+      return unless File.file?(filename)
+      record = calculate_checksum(filename, algorithm)
+      puts record.to_s
+    end
+
+    def calculate_checksum(filename : String, algorithm : Algorithm) : FileRecord
+      d = Digest.new(algorithm)
+      s = d.hexfinal_file(filename)
+      d.reset
+      FileRecord.new(s, Path[filename])
+    end
+
+    def main_run_check
+      option.filenames.each do |filename|
+        main_run_check(filename)
+      end
+    end
+
+    def main_run_check(filename : String)
       results = nil
       elapsed_time = Time.measure do
         filename = File.expand_path(filename) if option.absolute_path
