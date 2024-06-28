@@ -6,5 +6,9 @@ module CheckSum
 
     def initialize(@checksum, @filepath)
     end
+
+    def to_s
+      "#{checksum}  #{filepath}"
+    end
   end
 end

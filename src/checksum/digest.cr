@@ -24,6 +24,8 @@ module CheckSum
       end
     end
 
+    getter algorithm : Algorithm
+
     def initialize(algorithm : Algorithm)
       @algorithm = algorithm
       @digest = create_digest_instance

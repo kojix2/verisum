@@ -28,12 +28,16 @@ describe CheckSum::Digest do
       case algorithm
       when CheckSum::Algorithm::MD5
         digest.inspect.should match(/Digest::MD5/)
+        digest.algorithm.should eq CheckSum::Algorithm::MD5
       when CheckSum::Algorithm::SHA1
         digest.inspect.should match(/Digest::SHA1/)
+        digest.algorithm.should eq CheckSum::Algorithm::SHA1
       when CheckSum::Algorithm::SHA256
         digest.inspect.should match(/Digest::SHA256/)
+        digest.algorithm.should eq CheckSum::Algorithm::SHA256
       when CheckSum::Algorithm::SHA512
         digest.inspect.should match(/Digest::SHA512/)
+        digest.algorithm.should eq CheckSum::Algorithm::SHA512
       else
         raise "Unexpected algorithm #{algorithm}"
       end
