@@ -75,6 +75,11 @@ module CheckSum
 
     def parse(argv)
       @opt.parse(argv)
+      if argv.empty? && (@option.action == Action::Calculate || @option.action == Action::Check)
+        STDERR.puts "[checksum] ERROR: No files specified."
+        STDERR.puts help()
+        exit(1)
+      end
       @option.filenames = argv
       @option
     end
