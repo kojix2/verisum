@@ -289,14 +289,23 @@ module CheckSum
       print "#{result[:total]}"
       print " files"
       print ", "
-      print "#{result[:success]}".colorize(:green)
-      print " success".colorize(:green)
+      if result[:success].zero?
+        print "#{result[:success]} success"
+      else
+        print "#{result[:success]} success".colorize(:green)
+      end
       print ", "
-      print "#{result[:mismatch]}".colorize(:red)
-      print " mismatch".colorize(:red)
+      if result[:mismatch].zero?
+        print "#{result[:mismatch]} mismatch"
+      else
+        print "#{result[:mismatch]} mismatch".colorize(:red)
+      end
       print ", "
-      print "#{result[:error]}".colorize(:magenta)
-      print " errors".colorize(:magenta)
+      if result[:error].zero?
+        print "#{result[:error]} errors"
+      else
+        print "#{result[:error]} errors".colorize(:magenta)
+      end
 
       # Print the elapsed time
       print "  (#{format_time_span(elapsed_time)})"
