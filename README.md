@@ -6,6 +6,10 @@ Make `md5sum -c` or `sha256sum -c` prettier.
 
 ## Installation
 
+You can download pre-compiled binaries from [GitHub Release](https://github.com/kojix2/checksum.cr/releases).
+
+To compile from source code, type the following command
+
 ```sh
 git clone https://github.com/kojix2/checksum.cr
 cd checksum
@@ -32,9 +36,29 @@ Usage: checksum [options]
     --version                        Show version
 ```
 
+```
+checksum -a md5 * | tee md5.txt
+```
+
+```
+62525c1aa35e61fb4e60c053e1faa849  LICENSE
+3be217b6d3ac7c38e1805b01b1be0178  README.md
+cb9c37b1954a07579e044e33521c993d  shard.lock
+c680044745baa4b423450c9ecb8baebb  shard.yml
+```
+
+```
+checksum -c md5.txt
+```
+
+```
+4 files in md5.txt
+4 files, 4 success, 0 mismatch, 0 errors  (0.0 seconds)
+```
+
 ### Experimental multi-threading support (preview)
 
-This feature may not work properly.
+This feature may not work properly. The limitation on the speed of checksum computation is often IO. Therefore, achieving parallelism is not my priority.
 
 ```sh
 git clone https://github.com/kojix2/checksum.cr
