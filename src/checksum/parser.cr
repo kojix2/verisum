@@ -14,7 +14,7 @@ module CheckSum
         Version: #{VERSION}
         Source:  #{SOURCE}
 
-        Usage: checksum [options]
+        Usage: checksum [options] [path]
       BANNER
 
       @opt.on("-c", "--check", "Check the checksum") do
