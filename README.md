@@ -2,13 +2,13 @@
 
 [![test](https://github.com/kojix2/checksum.cr/actions/workflows/test.yml/badge.svg)](https://github.com/kojix2/checksum.cr/actions/workflows/test.yml)
 
-Make `md5sum -c` or `sha256sum -c` prettier.
+`checksum` makes the output of `md5sum -c` or `sha256sum -c` prettier.
 
 ## Installation
 
 You can download pre-compiled binaries from [GitHub Release](https://github.com/kojix2/checksum.cr/releases).
 
-To compile from source code, type the following command
+To compile from source code, follow the steps below:
 
 ```sh
 git clone https://github.com/kojix2/checksum.cr
@@ -18,6 +18,8 @@ cp bin/checksum /usr/local/bin/
 ```
 
 ## Usage
+
+To verify checksums from a file, use the following command:
 
 ```sh
 checksum -c md5sum.txt
@@ -36,9 +38,13 @@ Usage: checksum [options]
     --version                        Show version
 ```
 
-```
+To generate checksums and save them to a file, use:
+
+```sh
 checksum -a md5 * | tee md5.txt
 ```
+
+Example output:
 
 ```
 62525c1aa35e61fb4e60c053e1faa849  LICENSE
@@ -47,9 +53,13 @@ cb9c37b1954a07579e044e33521c993d  shard.lock
 c680044745baa4b423450c9ecb8baebb  shard.yml
 ```
 
-```
+Then, you can verify the checksums with:
+
+```sh
 checksum -c md5.txt
 ```
+
+Example output:
 
 ```
 4 files in md5.txt
@@ -58,7 +68,9 @@ checksum -c md5.txt
 
 ### Experimental multi-threading support (preview)
 
-This feature may not work properly. The limitation on the speed of checksum computation is often IO. Therefore, achieving parallelism is not my priority.
+This feature is experimental. The limitation on the speed of checksum computation is often I/O. Therefore, achieving parallelism is not the main focus.
+
+To use this feature, compile and run with the following commands:
 
 ```sh
 git clone https://github.com/kojix2/checksum.cr
