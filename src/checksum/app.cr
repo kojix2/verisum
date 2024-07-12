@@ -239,7 +239,7 @@ module CheckSum
 
     def print_ok_message(filepath, index, total)
       print_clear_the_line
-      print "(#{index + 1}/#{total}) "
+      print format_file_number(index, total)
       print "OK".colorize(:green)
       print ":\t"
       print filepath
@@ -248,7 +248,7 @@ module CheckSum
 
     def print_mismatch_message(filepath, index, total, expected_hash_value, actual_hash_value)
       print_clear_the_line
-      print "(#{index + 1}/#{total}) "
+      print format_file_number(index, total)
       print "Mismatch Error".colorize(:red)
       print ":\t"
       print filepath
@@ -272,7 +272,7 @@ module CheckSum
 
     def print_error_message(filepath, index, total, error)
       print_clear_the_line
-      print "(#{index + 1}/#{total}) "
+      print format_file_number(index, total)
       print "#{error.class}".colorize(:magenta)
       print ":\t"
       puts filepath
@@ -322,6 +322,12 @@ module CheckSum
 
     def print_help
       puts parser.help
+    end
+
+    private def format_file_number(index, total)
+      total_digits = total.to_s.size
+      formatted_index = (index + 1).to_s.rjust(total_digits, ' ')
+      "(#{formatted_index}/#{total}) "
     end
 
     private def print_clear_the_line
