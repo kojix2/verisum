@@ -54,7 +54,7 @@ module CheckSum
         Colorize.enabled = false
       end
 
-      @opt.on("--debug", "Debug mode [false]") do
+      @opt.on("--debug", "Print a backtrace on error") do
         CheckSumError.debug = true
       end
 
