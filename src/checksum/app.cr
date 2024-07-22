@@ -63,13 +63,24 @@ module CheckSum
     def main_run_calculate(filename : String)
       filename = File.expand_path(filename) if option.absolute_path
       algorithm = option.algorithm
-      # FIXME
-      # There are some cases to consider:
+
       # - If the file does not exist, it should not be calculated
-      # - If the file is a symlink, it should not be calculated ?
-      # - If the file is a directory, it should not be calculated ?
-      # - Recursive calculation of files in the directory ?
-      return unless File.file?(filename)
+
+      unless File.exists?(filename)
+        raise FileNotFoundError.new(filename)
+      end
+
+      case File.info(filename).type
+      when File::Type::Directory
+        # If the file is a directory, it should not be calculated
+        # Recursive calculation of files in the directory should be
+        # achieved with wildcards.
+        raise IsADirectoryError.new(filename)
+      when File::Type::Symlink
+        STDERR.puts "#{filename} is a symbolic link"
+        # If the file is a symlink, it should not be calculated ?
+        # should this return nil or raise an error?
+      end
       record = calculate_checksum(filename, algorithm)
       puts record.to_s
     end
