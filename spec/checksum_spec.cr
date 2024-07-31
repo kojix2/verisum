@@ -4,6 +4,7 @@ module CheckSum
   class App
     # It can change the output to a stream for testing
     property output : IO = STDOUT
+    getter exit_code
 
     # Override the default output stream
     def print(*args)
@@ -60,6 +61,7 @@ describe CheckSum do
     Dir.cd Path[__DIR__] / "fixtures" do
       result = app.verify_checksums(records, CheckSum::Algorithm::MD5)
       result.should eq EXPECTED_RESULT
+      app.exit_code.should eq 1
     end
   end
 
@@ -70,6 +72,7 @@ describe CheckSum do
     Dir.cd Path[__DIR__] / "fixtures" do
       result = app.verify_checksums(records, CheckSum::Algorithm::SHA1)
       result.should eq EXPECTED_RESULT
+      app.exit_code.should eq 1
     end
   end
 
@@ -80,6 +83,7 @@ describe CheckSum do
     Dir.cd Path[__DIR__] / "fixtures" do
       result = app.verify_checksums(records, CheckSum::Algorithm::SHA256)
       result.should eq EXPECTED_RESULT
+      app.exit_code.should eq 1
     end
   end
 
@@ -90,6 +94,18 @@ describe CheckSum do
     Dir.cd Path[__DIR__] / "fixtures" do
       result = app.verify_checksums(records, CheckSum::Algorithm::SHA512)
       result.should eq EXPECTED_RESULT
+      app.exit_code.should eq 1
+    end
+  end
+
+  it "can return exit code 0 when all checksums are correct" do
+    app = CheckSum::App.new
+    app.output = IO::Memory.new
+    records = app.parse_checksum_file("spec/fixtures/md5_correct")
+    Dir.cd Path[__DIR__] / "fixtures" do
+      result = app.verify_checksums(records, CheckSum::Algorithm::MD5)
+      result.should eq({total: 4, success: 4, mismatch: 0, error: 0})
+      app.exit_code.should eq 0
     end
   end
 end
