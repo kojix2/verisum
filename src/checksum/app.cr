@@ -235,12 +235,14 @@ module CheckSum
 
       if error
         print_error_message(filepath, index, total, error)
+        @exit_code = 1
         @n_error += 1
       elsif expected_hash_value == actual_hash_value
         print_ok_message(filepath, index, total)
         @n_success += 1
       else
         print_mismatch_message(filepath, index, total, expected_hash_value, actual_hash_value)
+        @exit_code = 1
         @n_mismatch += 1
       end
 
