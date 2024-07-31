@@ -10,6 +10,9 @@ module CheckSum
     getter parser : Parser
     getter option : Option
 
+    EXIT_SUCCESS = 0
+    EXIT_FAILURE = 1
+
     def initialize
       @option = Option.new
       @parser = Parser.new(@option)
@@ -23,7 +26,7 @@ module CheckSum
       # true if the cursor is at the beginning of the line
       @cleared_flag = true
 
-      @exit_code = 0
+      @exit_code = EXIT_SUCCESS
     end
 
     def run
@@ -235,14 +238,14 @@ module CheckSum
 
       if error
         print_error_message(filepath, index, total, error)
-        @exit_code = 1
+        @exit_code = EXIT_FAILURE
         @n_error += 1
       elsif expected_hash_value == actual_hash_value
         print_ok_message(filepath, index, total)
         @n_success += 1
       else
         print_mismatch_message(filepath, index, total, expected_hash_value, actual_hash_value)
-        @exit_code = 1
+        @exit_code = EXIT_FAILURE
         @n_mismatch += 1
       end
 
