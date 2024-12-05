@@ -173,14 +173,6 @@ module CheckSum
       }
     end
 
-    def verify_file_checksum(filepath, expected_hash_value, digest)
-      begin
-        actual_hash_value = digest.hexfinal_file(filepath)
-      rescue e
-        # FIXME
-      end
-    end
-
     def update_count_and_print(r1)
       filepath = r1.filepath
       filepath = File.expand_path(filepath) if option.absolute_path?
