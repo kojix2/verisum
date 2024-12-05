@@ -17,6 +17,12 @@ shards build --release
 cp bin/checksum /usr/local/bin/
 ```
 
+Homebrew:
+
+```
+brew install kojix2/brew/checksum
+```
+
 ## Usage
 
 To verify checksums from a file, use the following command:
