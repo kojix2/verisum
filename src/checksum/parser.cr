@@ -56,8 +56,17 @@ module CheckSum
         @option.clear_line = false
       end
 
-      @opt.on("--no-color", "Do not use color [false]") do
-        Colorize.enabled = false
+      @opt.on("--color WHEN", "when to use color (auto|always|never) [auto]") do |when_|
+        case when_
+        when "auto"
+          Colorize.on_tty_only!
+        when "always"
+          Colorize.enabled = true
+        when "never"
+          Colorize.enabled = false
+        else
+          raise ArgumentError.new("Unknown color mode: #{when_}")
+        end
       end
 
       @opt.on("--debug", "Print a backtrace on error") do
