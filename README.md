@@ -74,8 +74,7 @@ Example output:
 
 ### Experimental multi-threading support (preview)
 
-This feature is experimental. The limitation on the speed of checksum computation is often I/O. Therefore, achieving parallelism is not the main focus.
-
+This feature is experimental. Checksum speed is often limited by I/O, so parallelization usually doesn’t help reduce execution time. 
 To use this feature, compile and run with the following commands:
 
 ```sh
