@@ -13,8 +13,6 @@ module CheckSum
     EXIT_SUCCESS = 0
     EXIT_FAILURE = 1
 
-    record Result1, index : Int32, filepath : (String | Path), expected : String?, actual : String?, error : Exception?
-
     def initialize
       @option = Option.new
       @parser = Parser.new(@option)
@@ -65,7 +63,7 @@ module CheckSum
     end
 
     def run_calculate(filename : String)
-      filename = File.expand_path(filename) if option.absolute_path?
+      filename = resolve_filepath(filename)
       algorithm = option.algorithm
 
       # - If the file does not exist, it should not be calculated
@@ -98,7 +96,7 @@ module CheckSum
     def run_check(filename : String)
       results = nil
       elapsed_time = Time.measure do
-        filename = File.expand_path(filename) if option.absolute_path?
+        filename = resolve_filepath(filename)
         algorithm = option.algorithm
         if algorithm == Algorithm::AUTO
           algorithm = Digest.guess_algorithm(filename)
@@ -154,13 +152,10 @@ module CheckSum
         rescue e
           error = e
         ensure
-          # Reset the digest object
           digest.reset
         end
 
-        r1 = Result1.new(index, filepath, expected_hash_value, actual_hash_value, error)
-
-        update_count_and_print(r1)
+        update_count_and_print(index, filepath, expected_hash_value, actual_hash_value, error)
       end
 
       {
@@ -171,15 +166,9 @@ module CheckSum
       }
     end
 
-    def update_count_and_print(r1)
-      filepath = r1.filepath
-      filepath = File.expand_path(filepath) if option.absolute_path?
-
-      index = r1.index
+    def update_count_and_print(index, filepath, expected_hash_value, actual_hash_value, error)
+      filepath = resolve_filepath(filepath)
       total = @n_total
-      expected_hash_value = r1.expected
-      actual_hash_value = r1.actual
-      error = r1.error
 
       if error
         print_error_message(filepath, index, total, error)
@@ -280,6 +269,10 @@ module CheckSum
 
     def print_help
       puts parser.help_message
+    end
+
+    private def resolve_filepath(filename)
+      option.absolute_path? ? File.expand_path(filename) : filename
     end
 
     private def format_file_number(index, total)
