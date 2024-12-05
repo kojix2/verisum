@@ -217,7 +217,7 @@ module CheckSum
         end
       {% end %}
 
-      return {
+      {
         total:    @n_total,
         success:  @n_success,
         mismatch: @n_mismatch,
