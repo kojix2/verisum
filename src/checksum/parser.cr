@@ -97,7 +97,6 @@ module CheckSum
       if argv.empty? && (@option.action == Action::Calculate || @option.action == Action::Check)
         STDERR.puts "#{help_message}\n"
         raise NoFileSpecifiedError.new
-        exit(1)
       end
       @option.filenames = argv
       @option

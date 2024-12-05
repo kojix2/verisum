@@ -23,7 +23,7 @@ describe CheckSum::Digest do
   end
 
   it "creates appropriate digest instances based on algorithm" do
-    ALGORITHMS.each do |suffix, algorithm|
+    ALGORITHMS.each do |_suffix, algorithm|
       digest = CheckSum::Digest.new(algorithm)
       case algorithm
       when CheckSum::Algorithm::MD5
@@ -52,7 +52,7 @@ describe CheckSum::Digest do
       sha512: "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e",
     }
 
-    ALGORITHMS.each do |suffix, algorithm|
+    ALGORITHMS.each do |suffix, _algorithm|
       File.tempfile("checksum_test", suffix.to_s) do |temp_file|
         # Do not insert a newline at the end of the file
         # as it will change the checksum on some systems

@@ -1,6 +1,6 @@
 module CheckSum
   class CheckSumError < Exception
-    class_property debug : Bool = false
+    class_property? debug : Bool = false
   end
 
   class FileNotFoundError < Exception

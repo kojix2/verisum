@@ -19,8 +19,8 @@ module CheckSum
     property action : Action = Action::Calculate
     property algorithm : Algorithm = Algorithm::AUTO
     property filenames : Array(String) = [] of String
-    property clear_line : Bool = true
-    property verbose : Bool = false
-    property absolute_path : Bool = false
+    property? clear_line : Bool = true
+    property? verbose : Bool = false
+    property? absolute_path : Bool = false
   end
 end

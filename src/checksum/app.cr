@@ -46,7 +46,7 @@ module CheckSum
       exit(@exit_code)
     rescue ex
       STDERR.puts "[checksum] ERROR: #{ex.class} #{ex.message}".colorize(:red).bold
-      STDERR.puts "\n#{ex.backtrace.join("\n")}" if CheckSumError.debug
+      STDERR.puts "\n#{ex.backtrace.join("\n")}" if CheckSumError.debug?
       exit(1)
     end
 
@@ -57,13 +57,13 @@ module CheckSum
         end
       end
 
-      if option.verbose
+      if option.verbose?
         STDERR.puts "[checksum] (#{format_time_span(elapsed_time)})".colorize(:dark_gray)
       end
     end
 
     def main_run_calculate(filename : String)
-      filename = File.expand_path(filename) if option.absolute_path
+      filename = File.expand_path(filename) if option.absolute_path?
       algorithm = option.algorithm
 
       # - If the file does not exist, it should not be calculated
@@ -103,14 +103,14 @@ module CheckSum
     def main_run_check(filename : String)
       results = nil
       elapsed_time = Time.measure do
-        filename = File.expand_path(filename) if option.absolute_path
+        filename = File.expand_path(filename) if option.absolute_path?
         algorithm = option.algorithm
         if algorithm == Algorithm::AUTO
           algorithm = Digest.guess_algorithm(filename)
         end
         records = parse_checksum_file(filename)
         puts "#{records.size} files in #{filename.colorize.bold}"
-        if option.verbose
+        if option.verbose?
           puts "[checksum] Guessed algorithm: #{algorithm}".colorize(:dark_gray)
         end
         Dir.cd(File.dirname(filename)) do
@@ -227,7 +227,7 @@ module CheckSum
 
     def count_and_print_message(r1)
       filepath = r1.filepath
-      filepath = File.expand_path(filepath) if option.absolute_path
+      filepath = File.expand_path(filepath) if option.absolute_path?
 
       index = r1.index
       total = @n_total
@@ -278,7 +278,7 @@ module CheckSum
 
       puts
 
-      if option.verbose
+      if option.verbose?
         puts " expected: #{expected_hash_value}".colorize(:dark_gray)
         puts " actual:   #{actual_hash_value}".colorize(:dark_gray)
       end
@@ -291,7 +291,7 @@ module CheckSum
       print "#{error.class}".colorize(:magenta)
       print ":\t"
       puts filepath
-      if option.verbose
+      if option.verbose?
         puts " #{error.message}".colorize(:dark_gray)
       end
       @cleared_flag = true
@@ -347,7 +347,7 @@ module CheckSum
 
     private def print_clear_the_line
       return if @cleared_flag
-      if option.clear_line
+      if option.clear_line?
         print("\x1b[2K\r")
       else
         puts
