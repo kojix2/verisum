@@ -48,6 +48,19 @@ Usage: checksum [options]
     --version                        Show version
 ```
 
+To verify the checksums with:
+
+```sh
+checksum -c md5.txt
+```
+
+Example output:
+
+```
+4 files in md5.txt
+4 files, 4 success, 0 mismatch, 0 errors  (0.0 seconds)
+```
+
 To generate checksums and save them to a file, use:
 
 ```sh
@@ -63,18 +76,7 @@ cb9c37b1954a07579e044e33521c993d  shard.lock
 c680044745baa4b423450c9ecb8baebb  shard.yml
 ```
 
-Then, you can verify the checksums with:
-
-```sh
-checksum -c md5.txt
-```
-
-Example output:
-
-```
-4 files in md5.txt
-4 files, 4 success, 0 mismatch, 0 errors  (0.0 seconds)
-```
+This command is not meant for recursively scanning directories and creating files. Use tools like `find` or `fd`, sort with `sort` or `gsort`, and process with `xargs`.
 
 ## Development
 
