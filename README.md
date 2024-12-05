@@ -76,19 +76,6 @@ Example output:
 4 files, 4 success, 0 mismatch, 0 errors  (0.0 seconds)
 ```
 
-### Experimental multi-threading support (preview)
-
-This feature is experimental. Checksum speed is often limited by I/O, so parallelization usually doesn’t help reduce execution time. 
-To use this feature, compile and run with the following commands:
-
-```sh
-git clone https://github.com/kojix2/checksum.cr
-cd checksum
-shards build --release -Dpreview_mt
-cp bin/checksum /usr/local/bin/
-CRYSTAL_WORKERS=2 checksum -c md5sum.txt
-```
-
 ## Development
 
 Pull requests are welcome.
