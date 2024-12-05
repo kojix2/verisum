@@ -45,9 +45,8 @@ module CheckSum
       end
       exit(@exit_code)
     rescue ex
-      error_message = "[checksum] ERROR: #{ex.class} #{ex.message}"
-      error_message += "\n#{ex.backtrace.join("\n")}" if CheckSumError.debug
-      STDERR.puts error_message
+      STDERR.puts "[checksum] ERROR: #{ex.class} #{ex.message}".colorize(:red).bold
+      STDERR.puts "\n#{ex.backtrace.join("\n")}" if CheckSumError.debug
       exit(1)
     end
 
@@ -337,7 +336,7 @@ module CheckSum
     end
 
     def print_help
-      puts parser.help
+      puts parser.help_message
     end
 
     private def format_file_number(index, total)

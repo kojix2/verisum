@@ -6,6 +6,12 @@ require "./exception"
 
 module CheckSum
   class Parser
+    class NoFileSpecifiedError < CheckSumError
+      def initialize
+        super("No files specified.")
+      end
+    end
+
     def initialize(@option : Option)
       @opt = OptionParser.new
       @opt.banner = <<-BANNER
@@ -67,24 +73,28 @@ module CheckSum
       end
 
       @opt.invalid_option do |flag|
-        STDERR.puts "[checksum] ERROR: #{flag} is not a valid option."
-        STDERR.puts self
-        exit(1)
+        STDERR.puts "#{help_message}\n"
+        raise OptionParser::InvalidOption.new(flag)
+      end
+
+      @opt.missing_option do |flag|
+        STDERR.puts "#{help_message}\n"
+        raise OptionParser::MissingOption.new(flag)
       end
     end
 
     def parse(argv)
       @opt.parse(argv)
       if argv.empty? && (@option.action == Action::Calculate || @option.action == Action::Check)
-        STDERR.puts "[checksum] ERROR: No files specified."
-        STDERR.puts help()
+        STDERR.puts "#{help_message}\n"
+        raise NoFileSpecifiedError.new
         exit(1)
       end
       @option.filenames = argv
       @option
     end
 
-    def help
+    def help_message
       @opt.to_s
     end
   end
