@@ -13,6 +13,8 @@ module CheckSum
     EXIT_SUCCESS = 0
     EXIT_FAILURE = 1
 
+    record Result1, index : Int32, filepath : (String | Path), expected : String?, actual : String?, error : Exception?
+
     def initialize
       @option = Option.new
       @parser = Parser.new(@option)
@@ -87,13 +89,6 @@ module CheckSum
       puts record.to_s
     end
 
-    def calculate_checksum(filename : String, algorithm : Algorithm) : FileRecord
-      d = Digest.new(algorithm)
-      s = d.hexfinal_file(filename)
-      d.reset
-      FileRecord.new(s, Path[filename])
-    end
-
     def run_check
       option.filenames.each do |filename|
         run_check(filename)
@@ -120,6 +115,13 @@ module CheckSum
       print_result(results, elapsed_time) unless results.nil?
     end
 
+    def calculate_checksum(filename : String, algorithm : Algorithm) : FileRecord
+      d = Digest.new(algorithm)
+      s = d.hexfinal_file(filename)
+      d.reset
+      FileRecord.new(s, Path[filename])
+    end
+
     # Read the checksum file and parse each line into records
     def parse_checksum_file(filename)
       records = [] of FileRecord
@@ -133,16 +135,6 @@ module CheckSum
       # rescue
       #  raise CheckSumError.new("Failed to read the checksum file: #{filename}")
     end
-
-    def verify_file_checksum(filepath, expected_hash_value, digest)
-      begin
-        actual_hash_value = digest.hexfinal_file(filepath)
-      rescue e
-        # FIXME
-      end
-    end
-
-    record Result1, index : Int32, filepath : (String | Path), expected : String?, actual : String?, error : Exception?
 
     # Verify the MD5 checksums of the files
     def verify_file_checksums(records : Array(FileRecord), algorithm : Algorithm)
@@ -223,6 +215,14 @@ module CheckSum
         mismatch: @n_mismatch,
         error:    @n_error,
       }
+    end
+
+    def verify_file_checksum(filepath, expected_hash_value, digest)
+      begin
+        actual_hash_value = digest.hexfinal_file(filepath)
+      rescue e
+        # FIXME
+      end
     end
 
     def update_count_and_print(r1)
