@@ -33,9 +33,9 @@ module CheckSum
       @option = parser.parse(ARGV)
       case option.action
       when Action::Calculate
-        main_run_calculate
+        run_calculate
       when Action::Check
-        main_run_check
+        run_check
       when Action::Version
         print_version
       when Action::Help
@@ -50,10 +50,10 @@ module CheckSum
       exit(1)
     end
 
-    def main_run_calculate
+    def run_calculate
       elapsed_time = Time.measure do
         option.filenames.each do |filename|
-          main_run_calculate(filename)
+          run_calculate(filename)
         end
       end
 
@@ -62,7 +62,7 @@ module CheckSum
       end
     end
 
-    def main_run_calculate(filename : String)
+    def run_calculate(filename : String)
       filename = File.expand_path(filename) if option.absolute_path?
       algorithm = option.algorithm
 
@@ -94,13 +94,13 @@ module CheckSum
       FileRecord.new(s, Path[filename])
     end
 
-    def main_run_check
+    def run_check
       option.filenames.each do |filename|
-        main_run_check(filename)
+        run_check(filename)
       end
     end
 
-    def main_run_check(filename : String)
+    def run_check(filename : String)
       results = nil
       elapsed_time = Time.measure do
         filename = File.expand_path(filename) if option.absolute_path?
@@ -114,7 +114,7 @@ module CheckSum
           puts "[checksum] Guessed algorithm: #{algorithm}".colorize(:dark_gray)
         end
         Dir.cd(File.dirname(filename)) do
-          results = verify_checksums(records, algorithm)
+          results = verify_file_checksums(records, algorithm)
         end
       end
       print_result(results, elapsed_time) unless results.nil?
@@ -134,7 +134,7 @@ module CheckSum
       #  raise CheckSumError.new("Failed to read the checksum file: #{filename}")
     end
 
-    def verify_checksum(filepath, expected_hash_value, digest)
+    def verify_file_checksum(filepath, expected_hash_value, digest)
       begin
         actual_hash_value = digest.hexfinal_file(filepath)
       rescue e
@@ -145,7 +145,7 @@ module CheckSum
     record Result1, index : Int32, filepath : (String | Path), expected : String?, actual : String?, error : Exception?
 
     # Verify the MD5 checksums of the files
-    def verify_checksums(records : Array(FileRecord), algorithm : Algorithm)
+    def verify_file_checksums(records : Array(FileRecord), algorithm : Algorithm)
       @n_total = records.size
       @n_success = 0
       @n_mismatch = 0
@@ -203,7 +203,7 @@ module CheckSum
 
           r1 = Result1.new(index, filepath, expected_hash_value, actual_hash_value, error)
 
-          count_and_print_message(r1)
+          update_count_and_print(r1)
         {% end %}
       end
 
@@ -213,7 +213,7 @@ module CheckSum
       {% if flag?(:preview_mt) %}
         @n_total.times do
           r = channel.receive
-          count_and_print_message(r)
+          update_count_and_print(r)
         end
       {% end %}
 
@@ -225,7 +225,7 @@ module CheckSum
       }
     end
 
-    def count_and_print_message(r1)
+    def update_count_and_print(r1)
       filepath = r1.filepath
       filepath = File.expand_path(filepath) if option.absolute_path?
 

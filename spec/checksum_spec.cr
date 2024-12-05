@@ -59,7 +59,7 @@ describe CheckSum do
     app.output = IO::Memory.new
     records = app.parse_checksum_file("spec/fixtures/md5")
     Dir.cd Path[__DIR__] / "fixtures" do
-      result = app.verify_checksums(records, CheckSum::Algorithm::MD5)
+      result = app.verify_file_checksums(records, CheckSum::Algorithm::MD5)
       result.should eq EXPECTED_RESULT
       app.exit_code.should eq 1
     end
@@ -70,7 +70,7 @@ describe CheckSum do
     app.output = IO::Memory.new
     records = app.parse_checksum_file("spec/fixtures/sha1")
     Dir.cd Path[__DIR__] / "fixtures" do
-      result = app.verify_checksums(records, CheckSum::Algorithm::SHA1)
+      result = app.verify_file_checksums(records, CheckSum::Algorithm::SHA1)
       result.should eq EXPECTED_RESULT
       app.exit_code.should eq 1
     end
@@ -81,7 +81,7 @@ describe CheckSum do
     app.output = IO::Memory.new
     records = app.parse_checksum_file("spec/fixtures/sha256")
     Dir.cd Path[__DIR__] / "fixtures" do
-      result = app.verify_checksums(records, CheckSum::Algorithm::SHA256)
+      result = app.verify_file_checksums(records, CheckSum::Algorithm::SHA256)
       result.should eq EXPECTED_RESULT
       app.exit_code.should eq 1
     end
@@ -92,7 +92,7 @@ describe CheckSum do
     app.output = IO::Memory.new
     records = app.parse_checksum_file("spec/fixtures/sha512")
     Dir.cd Path[__DIR__] / "fixtures" do
-      result = app.verify_checksums(records, CheckSum::Algorithm::SHA512)
+      result = app.verify_file_checksums(records, CheckSum::Algorithm::SHA512)
       result.should eq EXPECTED_RESULT
       app.exit_code.should eq 1
     end
@@ -103,7 +103,7 @@ describe CheckSum do
     app.output = IO::Memory.new
     records = app.parse_checksum_file("spec/fixtures/md5_correct")
     Dir.cd Path[__DIR__] / "fixtures" do
-      result = app.verify_checksums(records, CheckSum::Algorithm::MD5)
+      result = app.verify_file_checksums(records, CheckSum::Algorithm::MD5)
       result.should eq({total: 4, success: 4, mismatch: 0, error: 0})
       app.exit_code.should eq 0
     end
