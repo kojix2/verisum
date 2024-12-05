@@ -132,8 +132,6 @@ module CheckSum
         end
       end
       records
-      # rescue
-      #  raise CheckSumError.new("Failed to read the checksum file: #{filename}")
     end
 
     # Verify the MD5 checksums of the files
