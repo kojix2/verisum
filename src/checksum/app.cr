@@ -68,20 +68,22 @@ module CheckSum
 
       # - If the file does not exist, it should not be calculated
 
-      unless File.exists?(filename) || filename == "-"
-        raise FileNotFoundError.new(filename)
-      end
+      unless filename == "-" # stdin
+        unless File.exists?(filename)
+          raise FileNotFoundError.new(filename)
+        end
 
-      case File.info(filename).type
-      when File::Type::Directory
-        # If the file is a directory, it should not be calculated
-        # Recursive calculation of files in the directory should be
-        # achieved with wildcards.
-        raise IsADirectoryError.new(filename)
-      when File::Type::Symlink
-        STDERR.puts "#{filename} is a symbolic link"
-        # If the file is a symlink, it should not be calculated ?
-        # should this return nil or raise an error?
+        case File.info(filename).type
+        when File::Type::Directory
+          # If the file is a directory, it should not be calculated
+          # Recursive calculation of files in the directory should be
+          # achieved with wildcards.
+          raise IsADirectoryError.new(filename)
+        when File::Type::Symlink
+          STDERR.puts "#{filename} is a symbolic link"
+          # If the file is a symlink, it should not be calculated ?
+          # should this return nil or raise an error?
+        end
       end
       record = calculate_checksum(filename, algorithm)
       puts record.to_s

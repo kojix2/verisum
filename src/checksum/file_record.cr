@@ -8,6 +8,7 @@ module CheckSum
     end
 
     def to_s
+      return checksum if filepath == Path["-"]
       "#{checksum}  #{filepath}"
     end
   end
