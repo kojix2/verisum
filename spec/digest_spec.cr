@@ -58,13 +58,13 @@ describe CheckSum::Digest do
         # as it will change the checksum on some systems
         temp_file.print("Test data for checksumming")
         digest = CheckSum::Digest.new(CheckSum::Digest.guess_algorithm(temp_file.path))
-        digest.hexfinal_file(temp_file.path)
+        digest.hexfinal(temp_file.path)
           .should eq expected_checksum[suffix]
 
         # Reset the digest and recompute the checksum
         digest.reset
         digest = CheckSum::Digest.new(CheckSum::Digest.guess_algorithm(temp_file.path))
-        digest.hexfinal_file(temp_file.path)
+        digest.hexfinal(temp_file.path)
           .should eq expected_checksum[suffix]
       end
     end

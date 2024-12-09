@@ -68,7 +68,7 @@ module CheckSum
 
       # - If the file does not exist, it should not be calculated
 
-      unless File.exists?(filename)
+      unless File.exists?(filename) || filename == "-"
         raise FileNotFoundError.new(filename)
       end
 
@@ -115,7 +115,7 @@ module CheckSum
 
     def calculate_checksum(filename : String, algorithm : Algorithm) : FileRecord
       d = Digest.new(algorithm)
-      s = d.hexfinal_file(filename)
+      s = d.hexfinal(filename == "-" ? STDIN : filename)
       d.reset
       FileRecord.new(s, Path[filename])
     end
@@ -155,7 +155,7 @@ module CheckSum
         error = nil
 
         begin
-          actual_hash_value = digest.hexfinal_file(filepath)
+          actual_hash_value = digest.hexfinal(filepath)
         rescue e
           error = e
         ensure
