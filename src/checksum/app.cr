@@ -123,10 +123,17 @@ module CheckSum
     # Read the checksum file and parse each line into records
     def parse_checksum_file(filename)
       records = [] of FileRecord
-      File.open(filename) do |file|
-        file.each_line do |line|
+      if filename == "-"
+        STDIN.each_line do |line|
           sum, path = line.chomp.split
           records << FileRecord.new(sum, Path[path])
+        end
+      else
+        File.open(filename) do |file|
+          file.each_line do |line|
+            sum, path = line.chomp.split
+            records << FileRecord.new(sum, Path[path])
+          end
         end
       end
       records
@@ -272,6 +279,7 @@ module CheckSum
     end
 
     private def resolve_filepath(filename)
+      return "-" if filename == "-"
       option.absolute_path? ? File.expand_path(filename) : filename
     end
 
