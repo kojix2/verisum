@@ -20,7 +20,12 @@ module CheckSum
         Version: #{VERSION}
         Source:  #{SOURCE}
 
-        Usage: checksum [options] [path]
+        Usage: checksum [options] [files ...]
+
+        Arguments:
+          [files...] File(s). Use a dash ('-') to read from standard input.
+
+        Options;
       BANNER
 
       @opt.on("-c", "--check", "Check the checksum") do
