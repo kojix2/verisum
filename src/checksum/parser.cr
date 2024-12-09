@@ -8,7 +8,7 @@ module CheckSum
   class Parser
     class NoFileSpecifiedError < CheckSumError
       def initialize
-        super("No files specified.")
+        super("No files specified. Please use '-' to specify standard input.")
       end
     end
 
