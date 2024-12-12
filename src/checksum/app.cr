@@ -1,5 +1,7 @@
 require "colorize"
-require "term-screen"
+{% if flag?(:term_screen) %}
+  require "term-screen"
+{% end %}
 
 require "./parser"
 require "./option"
@@ -166,9 +168,11 @@ module CheckSum
         end
 
         # Get the screen width is time consuming
-        if index % 100 == 0
-          @screen_width = Term::Screen.width.to_i
-        end
+        {% if flag?(:term_screen) %}
+          if index % 100 == 0
+            @screen_width = Term::Screen.width.to_i
+          end
+        {% end %}
         update_count_and_print(index, filepath, expected_hash_value, actual_hash_value, error)
       end
 
