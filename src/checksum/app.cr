@@ -27,7 +27,8 @@ module CheckSum
       @n_mismatch = 0
       @n_error = 0
 
-      @screen_width = 80 # Term::Screen.width.to_i
+      @screen_width = ENV.fetch("COLUMNS", "80").to_i
+      # Term::Screen.width.to_i # tput cols
 
       @exit_code = EXIT_SUCCESS
     end
@@ -153,6 +154,8 @@ module CheckSum
 
       digest = Digest.new(algorithm)
 
+      last_update_col_time = Time.utc
+
       records.each_with_index do |file_record, index|
         filepath = file_record.filepath
         expected_hash_value = file_record.checksum
@@ -171,6 +174,10 @@ module CheckSum
         {% if flag?(:term_screen) %}
           if index % 100 == 0
             @screen_width = Term::Screen.width.to_i
+            last_update_col_time = Time.utc
+          elsif Time.new - last_update_col_time > Time::Span.new(secondes: 10)
+            @screen_width = Term::Screen.width.to_i
+            last_update_col_time = Time.utc
           end
         {% end %}
         update_count_and_print(index, filepath, expected_hash_value, actual_hash_value, error)
