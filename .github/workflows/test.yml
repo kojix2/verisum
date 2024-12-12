@@ -26,6 +26,8 @@ jobs:
         run: shards build --release 
       - name: Run executable (help)
         run: bin/checksum --help && bin/checksum --version
+      - name: Run tests
+        run: crystal spec
       - uses: actions/upload-artifact@v4
         with:
           name: checksum-cli-${{ matrix.os }}
