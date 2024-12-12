@@ -8,4 +8,8 @@ targets:
   checksum:
     main: src/cli.cr
 
+dependencies:
+  term-screen:
+    github: crystal-term/screen
+
 license: MIT

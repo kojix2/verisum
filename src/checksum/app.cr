@@ -1,4 +1,5 @@
 require "colorize"
+require "term-screen"
 
 require "./parser"
 require "./option"
@@ -13,6 +14,8 @@ module CheckSum
     EXIT_SUCCESS = 0
     EXIT_FAILURE = 1
 
+    @screen_width : Int32
+
     def initialize
       @option = Option.new
       @parser = Parser.new(@option)
@@ -22,9 +25,7 @@ module CheckSum
       @n_mismatch = 0
       @n_error = 0
 
-      # It is used to clear the line
-      # true if the cursor is at the beginning of the line
-      @cleared_flag = true
+      @screen_width = 80 # Term::Screen.width.to_i
 
       @exit_code = EXIT_SUCCESS
     end
@@ -164,6 +165,10 @@ module CheckSum
           digest.reset
         end
 
+        # Get the screen width is time consuming
+        if index % 100 == 0
+          @screen_width = Term::Screen.width.to_i
+        end
         update_count_and_print(index, filepath, expected_hash_value, actual_hash_value, error)
       end
 
@@ -178,6 +183,9 @@ module CheckSum
     def update_count_and_print(index, filepath, expected_hash_value, actual_hash_value, error)
       filepath = resolve_filepath(filepath)
       total = @n_total
+
+      # Store the current position of the cursor
+      print "\e7" if option.clear_line?
 
       if error
         print_error_message(filepath, index, total, error)
@@ -198,11 +206,24 @@ module CheckSum
 
     def print_ok_message(filepath, index, total)
       print_clear_the_line
-      print format_file_number(index, total)
+      formatted_number = format_file_number(index, total)
+      print formatted_number
       print "OK".colorize(:green)
-      print ":\t"
-      print filepath
-      @cleared_flag = false
+      print ":"
+
+      # Use tab size of 8
+      tab_size = 8
+      padding_spaces = [tab_size - (formatted_number.size + 3) % tab_size, 0].max
+      print " " * padding_spaces
+
+      available_space = @screen_width - formatted_number.size - 3 - padding_spaces
+      filepath = filepath.to_s
+
+      if filepath.size > available_space
+        print "...#{filepath[-(available_space - 3)..-1]}"
+      else
+        print filepath
+      end
     end
 
     def print_mismatch_message(filepath, index, total, expected_hash_value, actual_hash_value)
@@ -226,7 +247,8 @@ module CheckSum
         puts " expected: #{expected_hash_value}".colorize(:dark_gray)
         puts " actual:   #{actual_hash_value}".colorize(:dark_gray)
       end
-      @cleared_flag = true
+      # store the current position of the cursor
+      print "\e7" if option.clear_line?
     end
 
     def print_error_message(filepath, index, total, error)
@@ -238,7 +260,8 @@ module CheckSum
       if option.verbose?
         puts " #{error.message}".colorize(:dark_gray)
       end
-      @cleared_flag = true
+      # store the current position of the cursor
+      print "\e7" if option.clear_line?
     end
 
     def print_result(result, elapsed_time)
@@ -292,9 +315,13 @@ module CheckSum
     end
 
     private def print_clear_the_line
-      return if @cleared_flag
       if option.clear_line?
-        print("\x1b[2K\r")
+        # restore the cursor to the last saved position
+        print "\e8"
+        # erase from cursor until end of screen
+        print "\e[J"
+        # Carriage return
+        print "\r"
       else
         puts
       end
