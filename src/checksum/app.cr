@@ -172,12 +172,13 @@ module CheckSum
 
         # Get the screen width is time consuming
         {% if flag?(:term_screen) %}
+          now = Time.utc
           if index % 100 == 0
             @screen_width = Term::Screen.width.to_i
-            last_update_col_time = Time.utc
-          elsif Time.new - last_update_col_time > Time::Span.new(secondes: 10)
+            last_update_col_time = now
+          elsif now - last_update_col_time > Time::Span.new(seconds: 10)
             @screen_width = Term::Screen.width.to_i
-            last_update_col_time = Time.utc
+            last_update_col_time = now
           end
         {% end %}
         update_count_and_print(index, filepath, expected_hash_value, actual_hash_value, error)
