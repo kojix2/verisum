@@ -36,16 +36,15 @@ checksum -c md5sum.txt
 ```
 
 ```
-Usage: checksum [options]
-    -c, --check FILE                 Read checksums from the FILE (required)
+  Options;
+    -c, --check                      Check the checksum
     -a, --algorithm ALGORITHM        (md5|sha1|sha256|sha512) [auto]
     -A, --absolute                   Output absolute path [false]
-    -v, --verbose                    Verbose mode for outputting checksums and errors.
-    --no-clear                       Do not clear the line [false]
-    --no-color                       Do not use color [false]
-    --debug                          Debug mode [false]
+    -v, --verbose                    Output checksums and errors, etc [false]
+    -C, --color WHEN                 when to use color (auto|always|never) [auto]
+    -D, --debug                      Print a backtrace on error
     -h, --help                       Show this message
-    --version                        Show version
+    -V, --version                    Show version
 ```
 
 To verify the checksums with:

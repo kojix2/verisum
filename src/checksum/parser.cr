@@ -57,11 +57,7 @@ module CheckSum
         @option.verbose = true
       end
 
-      @opt.on("--no-clear", "Do not clear the line [false]") do
-        @option.clear_line = false
-      end
-
-      @opt.on("--color WHEN", "when to use color (auto|always|never) [auto]") do |when_|
+      @opt.on("-C", "--color WHEN", "when to use color (auto|always|never) [auto]") do |when_|
         case when_
         when "auto"
           Colorize.on_tty_only!
@@ -74,7 +70,7 @@ module CheckSum
         end
       end
 
-      @opt.on("--debug", "Print a backtrace on error") do
+      @opt.on("-D", "--debug", "Print a backtrace on error") do
         CheckSumError.debug = true
       end
 
@@ -82,7 +78,7 @@ module CheckSum
         @option.action = Action::Help
       end
 
-      @opt.on("--version", "Show version") do
+      @opt.on("-V", "--version", "Show version") do
         @option.action = Action::Version
       end
 
