@@ -57,6 +57,11 @@ module CheckSum
         @option.verbose = true
       end
 
+      @opt.on("-N", "--no-clear", "Do not clear the line after output [false]") do
+        @option.clear_line = false
+        # FIXME: automatically disable clear_line if output is not a tty?
+      end
+
       @opt.on("-C", "--color WHEN", "when to use color (auto|always|never) [auto]") do |when_|
         case when_
         when "auto"
