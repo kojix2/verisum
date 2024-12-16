@@ -1,4 +1,0 @@
-5 files in [1mfixtures/md5[0m
-78[J(1/5) [32mOK[0m:       empty.txt78[J(2/5) [31mMismatch Error[0m:	erroneous_emu.txt	[90m(44 bytes)[0m
-778[J(3/5) [32mOK[0m:       fox.txt78[J(4/5) [32mOK[0m:       lorem.txt78[J(5/5) [35mFile::NotFoundError[0m:	missing.txt
-78[J5 files, [32m3 success[0m, [31m1 mismatch[0m, [35m1 errors[0m  (0.02 seconds)
