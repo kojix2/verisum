@@ -136,23 +136,21 @@ module CheckSum
 
     # Read the checksum file and parse each line into records
     def parse_checksum_file(filename) : Array(FileRecord)
-      records = [] of FileRecord
       if filename == "-"
-        STDIN.each_line do |line|
-          next if line =~ /^\s*#/
-          sum, path = line.chomp.split
-          records << FileRecord.new(sum, Path[path])
-        end
+        parse_lines(STDIN)
       else
         File.open(filename) do |file|
-          file.each_line do |line|
-            next if line =~ /^\s*#/
-            sum, path = line.chomp.split
-            records << FileRecord.new(sum, Path[path])
-          end
+          parse_lines(file)
         end
       end
-      records
+    end
+
+    private def parse_lines(io : IO) : Array(FileRecord)
+      io.each_line.map do |line|
+        next if line =~ /^\s*#/ # Skip comment lines
+        sum, path = line.chomp.split
+        FileRecord.new(sum, Path[path])
+      end.to_a.compact
     end
 
     # Verify the MD5 checksums of the files
