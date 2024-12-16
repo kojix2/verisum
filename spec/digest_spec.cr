@@ -8,12 +8,6 @@ ALGORITHMS = {
 }
 
 describe CheckSum::Digest do
-  it "raises an error for unknown algorithm in guess_algorithm" do
-    expect_raises(CheckSum::CheckSumError) do
-      CheckSum::Digest.guess_algorithm("test_file_unknown")
-    end
-  end
-
   it "creates appropriate digest instances based on algorithm" do
     ALGORITHMS.each do |_suffix, algorithm|
       digest = CheckSum::Digest.new(algorithm)
@@ -44,18 +38,18 @@ describe CheckSum::Digest do
       sha512: "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e",
     }
 
-    ALGORITHMS.each do |suffix, _algorithm|
+    ALGORITHMS.each do |suffix, algorithm|
       File.tempfile("checksum_test", suffix.to_s) do |temp_file|
         # Do not insert a newline at the end of the file
         # as it will change the checksum on some systems
         temp_file.print("Test data for checksumming")
-        digest = CheckSum::Digest.new(CheckSum::Digest.guess_algorithm(temp_file.path))
+        digest = CheckSum::Digest.new(algorithm)
         digest.hexfinal(temp_file.path)
           .should eq expected_checksum[suffix]
 
         # Reset the digest and recompute the checksum
         digest.reset
-        digest = CheckSum::Digest.new(CheckSum::Digest.guess_algorithm(temp_file.path))
+        digest = CheckSum::Digest.new(algorithm)
         digest.hexfinal(temp_file.path)
           .should eq expected_checksum[suffix]
       end
