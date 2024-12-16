@@ -8,14 +8,6 @@ ALGORITHMS = {
 }
 
 describe CheckSum::Digest do
-  it "can guess the algorithm from the filename" do
-    ALGORITHMS.each do |suffix, algorithm|
-      filename = "test_file_#{suffix}"
-      guessed_algorithm = CheckSum::Digest.guess_algorithm(filename)
-      guessed_algorithm.should eq algorithm
-    end
-  end
-
   it "raises an error for unknown algorithm in guess_algorithm" do
     expect_raises(CheckSum::CheckSumError) do
       CheckSum::Digest.guess_algorithm("test_file_unknown")

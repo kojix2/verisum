@@ -9,21 +9,6 @@ module CheckSum
   class Digest
     @digest : (::Digest::MD5 | ::Digest::SHA1 | ::Digest::SHA256 | ::Digest::SHA512)
 
-    def self.guess_algorithm(filename : String) : Algorithm
-      case File.basename(filename).downcase
-      when /sha512/
-        Algorithm::SHA512
-      when /sha256/
-        Algorithm::SHA256
-      when /sha1/
-        Algorithm::SHA1
-      when /md5/
-        Algorithm::MD5
-      else
-        raise CheckSumError.new("Cannot guess the algorithm from the filename: #{filename}")
-      end
-    end
-
     getter algorithm : Algorithm
 
     def initialize(algorithm : Algorithm)

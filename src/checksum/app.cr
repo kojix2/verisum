@@ -103,11 +103,19 @@ module CheckSum
       results = nil
       elapsed_time = Time.measure do
         filename = resolve_filepath(filename)
+        records = parse_checksum_file(filename)
         algorithm = option.algorithm
         if algorithm == Algorithm::AUTO
-          algorithm = Digest.guess_algorithm(filename)
+          algorithm =
+            case records.first.checksum
+            when /^[0-9a-f]{32}$/  then Algorithm::MD5
+            when /^[0-9a-f]{40}$/  then Algorithm::SHA1
+            when /^[0-9a-f]{64}$/  then Algorithm::SHA256
+            when /^[0-9a-f]{128}$/ then Algorithm::SHA512
+            else
+              raise CheckSumError.new("Unknown algorithm")
+            end
         end
-        records = parse_checksum_file(filename)
         puts "#{records.size} files in #{filename.colorize.bold}"
         if option.verbose?
           puts "[checksum] Guessed algorithm: #{algorithm}".colorize(:dark_gray)
@@ -127,16 +135,18 @@ module CheckSum
     end
 
     # Read the checksum file and parse each line into records
-    def parse_checksum_file(filename)
+    def parse_checksum_file(filename) : Array(FileRecord)
       records = [] of FileRecord
       if filename == "-"
         STDIN.each_line do |line|
+          next if line =~ /^\s*#/
           sum, path = line.chomp.split
           records << FileRecord.new(sum, Path[path])
         end
       else
         File.open(filename) do |file|
           file.each_line do |line|
+            next if line =~ /^\s*#/
             sum, path = line.chomp.split
             records << FileRecord.new(sum, Path[path])
           end
