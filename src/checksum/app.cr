@@ -100,31 +100,38 @@ module CheckSum
     end
 
     def run_check(filename : String)
+      filename = resolve_filepath(filename)
+      records = parse_checksum_file(filename)
+      return if records.empty?
+
+      algorithm = determine_algorithm(records, option.algorithm)
+      puts "#{records.size} files in #{filename.colorize.bold}"
+
+      if option.verbose?
+        puts "[checksum] Guessed algorithm: #{algorithm}".colorize(:dark_gray)
+      end
+
       results = nil
       elapsed_time = Time.measure do
-        filename = resolve_filepath(filename)
-        records = parse_checksum_file(filename)
-        algorithm = option.algorithm
-        if algorithm == Algorithm::AUTO
-          algorithm =
-            case records.first.checksum
-            when /^[0-9a-f]{32}$/  then Algorithm::MD5
-            when /^[0-9a-f]{40}$/  then Algorithm::SHA1
-            when /^[0-9a-f]{64}$/  then Algorithm::SHA256
-            when /^[0-9a-f]{128}$/ then Algorithm::SHA512
-            else
-              raise CheckSumError.new("Unknown algorithm")
-            end
-        end
-        puts "#{records.size} files in #{filename.colorize.bold}"
-        if option.verbose?
-          puts "[checksum] Guessed algorithm: #{algorithm}".colorize(:dark_gray)
-        end
         Dir.cd(File.dirname(filename)) do
           results = verify_file_checksums(records, algorithm)
         end
       end
+
       print_result(results, elapsed_time) unless results.nil?
+    end
+
+    private def determine_algorithm(records : Array(FileRecord), user_algorithm : Algorithm) : Algorithm
+      return user_algorithm unless user_algorithm == Algorithm::AUTO
+
+      case records.first.checksum
+      when /^[0-9a-f]{32}$/  then Algorithm::MD5
+      when /^[0-9a-f]{40}$/  then Algorithm::SHA1
+      when /^[0-9a-f]{64}$/  then Algorithm::SHA256
+      when /^[0-9a-f]{128}$/ then Algorithm::SHA512
+      else
+        raise CheckSumError.new("Unknown algorithm")
+      end
     end
 
     def calculate_checksum(filename : String, algorithm : Algorithm) : FileRecord
