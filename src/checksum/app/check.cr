@@ -17,11 +17,14 @@ module CheckSum
         else
           option.algorithm
         end
-      puts "#{records.size} files in #{filename.colorize.bold}"
+      print "#{records.size} files in #{filename.colorize.bold}"
 
       if option.verbose?
-        puts "[checksum] Guessed algorithm: #{algorithm}".colorize(:dark_gray)
+        puts
+        print "[checksum] Guessed algorithm: #{algorithm}".colorize(:dark_gray)
       end
+
+      print "\n\e7" if option.clear_line?
 
       results = nil
       elapsed_time = Time.measure do
@@ -160,14 +163,14 @@ module CheckSum
         print "(#{File.size(filepath)} bytes)".colorize(:dark_gray)
       end
 
-      puts
-
       if option.verbose?
-        puts " expected: #{expected_hash_value}".colorize(:dark_gray)
-        puts " actual:   #{actual_hash_value}".colorize(:dark_gray)
+        puts
+        print " expected: #{expected_hash_value}".colorize(:dark_gray)
+        puts
+        print " actual:   #{actual_hash_value}".colorize(:dark_gray)
       end
       # store the current position of the cursor
-      print "\e7" if option.clear_line?
+      print "\n\e7" if option.clear_line?
     end
 
     def print_error_message(filepath, index, total, error)
@@ -175,12 +178,12 @@ module CheckSum
       print format_file_number(index, total)
       print "#{error.class}".colorize(:magenta)
       print ":\t"
-      puts filepath
+      print filepath
       if option.verbose?
-        puts " #{error.message}".colorize(:dark_gray)
+        print "\n #{error.message}".colorize(:dark_gray)
       end
       # store the current position of the cursor
-      print "\e7" if option.clear_line?
+      print "\n\e7" if option.clear_line?
     end
 
     def print_result(result, elapsed_time)
