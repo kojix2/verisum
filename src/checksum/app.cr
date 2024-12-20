@@ -42,7 +42,13 @@ module CheckSum
       @n_mismatch = 0
       @n_error = 0
 
-      @screen_width = ENV.fetch("COLUMNS", "80").to_i
+      @screen_width = \
+         begin
+          ENV.fetch("COLUMNS", 80).to_i
+        rescue
+          80
+        end
+
       # Term::Screen.width.to_i # tput cols
 
       @exit_code = EXIT_SUCCESS
