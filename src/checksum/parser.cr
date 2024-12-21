@@ -57,10 +57,12 @@ module CheckSum
         @option.verbose = true
       end
 
+      @option.clear_line = false unless STDOUT.tty?
       @opt.on("-N", "--no-clear", "Do not clear the line after output [false]") do
         @option.clear_line = false
       end
 
+      Colorize.on_tty_only! # [auto]
       @opt.on("-C", "--color WHEN", "when to use color (auto|always|never) [auto]") do |when_|
         case when_
         when "auto"
@@ -103,7 +105,6 @@ module CheckSum
         STDERR.puts "#{help_message}\n"
         raise NoFileSpecifiedError.new
       end
-      @option.clear_line = false unless STDOUT.tty?
       @option.filenames = argv
       @option
     end
