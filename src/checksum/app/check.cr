@@ -47,10 +47,16 @@ module CheckSum
 
     private def parse_lines(io : IO) : Array(FileRecord)
       io.each_line.map do |line|
-        next if line =~ /^\s*#/ # Skip comment lines
-        sum, path = line.chomp.split
-        FileRecord.new(sum, Path[path])
+        parse_line(line)
       end.to_a.compact
+    end
+
+    private def parse_line(line : String) : FileRecord?
+      return nil if line =~ /^\s*#/ # Skip comment lines
+      sum, path = line.chomp.split
+      FileRecord.new(sum, Path[path])
+    rescue
+      raise ParseError.new(line)
     end
 
     # Verify the MD5 checksums of the files

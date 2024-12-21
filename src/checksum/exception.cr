@@ -14,4 +14,10 @@ module CheckSum
       super("#{filename} is a directory")
     end
   end
+
+  class ParseError < Exception
+    def initialize(line)
+      super("Error parsing line: #{line}")
+    end
+  end
 end
