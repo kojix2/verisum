@@ -59,7 +59,6 @@ module CheckSum
 
       @opt.on("-N", "--no-clear", "Do not clear the line after output [false]") do
         @option.clear_line = false
-        # FIXME: automatically disable clear_line if output is not a tty?
       end
 
       @opt.on("-C", "--color WHEN", "when to use color (auto|always|never) [auto]") do |when_|
@@ -104,6 +103,7 @@ module CheckSum
         STDERR.puts "#{help_message}\n"
         raise NoFileSpecifiedError.new
       end
+      @option.clear_line = false unless STDOUT.tty?
       @option.filenames = argv
       @option
     end
