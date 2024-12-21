@@ -2,11 +2,11 @@ module CheckSum
   class App
     def run_check
       option.filenames.each do |filename|
-        run_check(filename)
+        run_check_file(filename)
       end
     end
 
-    def run_check(filename : String)
+    def run_check_file(filename : String)
       filename = resolve_filepath(filename)
       records = parse_checksum_file(filename)
       return if records.empty?
@@ -17,7 +17,8 @@ module CheckSum
         else
           option.algorithm
         end
-      puts "#{records.size} files in #{filename.colorize.bold}"
+
+      puts "#{records.size} files in #{(filename == "-" ? "standard input" : filename).colorize.bold}"
 
       if option.verbose?
         puts "[checksum] Guessed algorithm: #{algorithm}".colorize(:dark_gray)
