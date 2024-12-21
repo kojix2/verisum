@@ -17,14 +17,11 @@ module CheckSum
         else
           option.algorithm
         end
-      print "#{records.size} files in #{filename.colorize.bold}"
+      puts "#{records.size} files in #{filename.colorize.bold}"
 
       if option.verbose?
-        puts
-        print "[checksum] Guessed algorithm: #{algorithm}".colorize(:dark_gray)
+        puts "[checksum] Guessed algorithm: #{algorithm}".colorize(:dark_gray)
       end
-
-      print "\n\e7" if option.clear_line?
 
       results = nil
       elapsed_time = Time.measure do
@@ -106,19 +103,19 @@ module CheckSum
       filepath = resolve_filepath(filepath)
       total = @n_total
 
-      # Store the current position of the cursor
-      print "\e7" if option.clear_line?
-
       if error
         print_error_message(filepath, index, total, error)
         @exit_code = EXIT_FAILURE
+        @clear_flag = false
         @n_error += 1
       elsif expected_hash_value == actual_hash_value
         print_ok_message(filepath, index, total)
+        @clear_flag = true
         @n_success += 1
       else
         print_mismatch_message(filepath, index, total, expected_hash_value, actual_hash_value)
         @exit_code = EXIT_FAILURE
+        @clear_flag = false
         @n_mismatch += 1
       end
 
@@ -126,8 +123,20 @@ module CheckSum
       output.flush
     end
 
+    private def print_clear_line
+      if option.clear_line? && @clear_flag
+        # restore the cursor to the last saved position
+        print "\e8"
+        # erase from cursor until end of screen
+        print "\e[J"
+        # Carriage return
+        print "\r"
+      end
+    end
+
     def print_ok_message(filepath, index, total)
-      print_clear_the_line
+      print_clear_line
+      print "\e7" if option.clear_line?
       formatted_number = format_file_number(index, total)
       print formatted_number
       print "OK".colorize(:green)
@@ -146,10 +155,12 @@ module CheckSum
       else
         print filepath
       end
+
+      puts unless option.clear_line?
     end
 
     def print_mismatch_message(filepath, index, total, expected_hash_value, actual_hash_value)
-      print_clear_the_line
+      print_clear_line
       print format_file_number(index, total)
       print "Mismatch Error".colorize(:red)
       print ":\t"
@@ -160,34 +171,28 @@ module CheckSum
       case File.size(filepath)
       when 0..100
         print "\t"
-        print "(#{File.size(filepath)} bytes)".colorize(:dark_gray)
+        puts "(#{File.size(filepath)} bytes)".colorize(:dark_gray)
       end
 
       if option.verbose?
-        puts
-        print " expected: #{expected_hash_value}".colorize(:dark_gray)
-        puts
-        print " actual:   #{actual_hash_value}".colorize(:dark_gray)
+        puts " expected: #{expected_hash_value}".colorize(:dark_gray)
+        puts " actual:   #{actual_hash_value}".colorize(:dark_gray)
       end
-      # store the current position of the cursor
-      print "\n\e7" if option.clear_line?
     end
 
     def print_error_message(filepath, index, total, error)
-      print_clear_the_line
+      print_clear_line
       print format_file_number(index, total)
       print "#{error.class}".colorize(:magenta)
       print ":\t"
-      print filepath
+      puts filepath
       if option.verbose?
-        print "\n #{error.message}".colorize(:dark_gray)
+        puts " #{error.message}".colorize(:dark_gray)
       end
-      # store the current position of the cursor
-      print "\n\e7" if option.clear_line?
     end
 
     def print_result(result, elapsed_time)
-      print_clear_the_line
+      print_clear_line
 
       # Print the result
       print "#{result[:total]}"
