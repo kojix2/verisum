@@ -3,7 +3,7 @@ module CheckSum
     def run_calculate
       elapsed_time = Time.measure do
         option.filenames.each do |filename|
-          run_calculate(filename)
+          calculate_file_checksum(filename)
         end
       end
 
@@ -12,31 +12,27 @@ module CheckSum
       end
     end
 
-    def run_calculate(filename : String)
+    def calculate_file_checksum(filename : String)
       filename = resolve_filepath(filename)
+      check_file_validity(filename)
       algorithm = option.algorithm
-
-      # - If the file does not exist, it should not be calculated
-
-      unless filename == "-" # stdin
-        unless File.exists?(filename)
-          raise FileNotFoundError.new(filename)
-        end
-
-        case File.info(filename).type
-        when File::Type::Directory
-          # If the file is a directory, it should not be calculated
-          # Recursive calculation of files in the directory should be
-          # achieved with wildcards.
-          raise IsADirectoryError.new(filename)
-        when File::Type::Symlink
-          stderr.puts "#{filename} is a symbolic link"
-          # If the file is a symlink, it should not be calculated ?
-          # should this return nil or raise an error?
-        end
-      end
       record = calculate_checksum(filename, algorithm)
       puts record.to_s
+    end
+
+    private def check_file_validity(filename : String)
+      return if filename == "-" # stdin
+
+      unless File.exists?(filename)
+        raise FileNotFoundError.new(filename)
+      end
+
+      case File.info(filename).type
+      when File::Type::Directory
+        raise IsADirectoryError.new(filename)
+      when File::Type::Symlink
+        stderr.puts "#{filename} is a symbolic link"
+      end
     end
   end
 end
