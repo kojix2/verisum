@@ -14,7 +14,7 @@ module CheckSum
       when /^[0-9a-f]{64}$/  then Algorithm::SHA256
       when /^[0-9a-f]{128}$/ then Algorithm::SHA512
       else
-        raise CheckSumError.new("Unknown checksum length: #{checksum.size}")
+        raise UnknownAlgorithmError.new("Unknown algorithm for checksum: #{checksum}")
       end
     end
 

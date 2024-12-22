@@ -20,4 +20,7 @@ module CheckSum
       super("Error parsing line: #{line}")
     end
   end
+
+  class UnknownAlgorithmError < Exception
+  end
 end
