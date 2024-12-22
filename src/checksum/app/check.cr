@@ -95,6 +95,7 @@ module CheckSum
             last_update_col_time = now
           end
         {% end %}
+
         update_count_and_print(index, filepath, expected_hash_value, actual_hash_value, error)
       end
 
@@ -130,7 +131,7 @@ module CheckSum
       output.flush
     end
 
-    private def print_clear_line
+    private def print_clear_line : Bool
       if option.clear_line? && @clear_flag
         # restore the cursor to the last saved position
         print "\e8"
@@ -138,11 +139,15 @@ module CheckSum
         print "\e[J"
         # Carriage return
         print "\r"
+        true
+      else
+        false
       end
     end
 
-    def print_ok_message(filepath, index, total)
+    def print_ok_message(filepath, index, total) : Nil
       print_clear_line
+
       print "\e7" if option.clear_line?
       formatted_number = format_file_number(index, total)
       print formatted_number
@@ -166,17 +171,16 @@ module CheckSum
       puts unless option.clear_line?
     end
 
-    def print_mismatch_message(filepath, index, total, expected_hash_value, actual_hash_value)
+    def print_mismatch_message(filepath, index, total, expected_hash_value, actual_hash_value) : Nil
       print_clear_line
+
       print format_file_number(index, total)
       print "Mismatch Error".colorize(:red)
       print ":\t"
       print filepath
 
-      # Check if file is or very small
-      # This is useful when the file is empty
-      case File.size(filepath)
-      when 0..100
+      # Check if the file is very small or empty
+      if File.size(filepath) < 100
         print "\t"
         puts "(#{File.size(filepath)} bytes)".colorize(:dark_gray)
       end
@@ -187,8 +191,9 @@ module CheckSum
       end
     end
 
-    def print_error_message(filepath, index, total, error)
+    def print_error_message(filepath, index, total, error) : Nil
       print_clear_line
+
       print format_file_number(index, total)
       print "#{error.class}".colorize(:magenta)
       print ":\t"
@@ -196,7 +201,7 @@ module CheckSum
       puts " #{error.message}".colorize(:dark_gray) if option.verbose?
     end
 
-    def print_result(result, elapsed_time)
+    def print_result(result, elapsed_time) : Nil
       print_clear_line
 
       # Print the result
@@ -211,7 +216,7 @@ module CheckSum
       puts "  (#{format_time_span(elapsed_time)})"
     end
 
-    private def print_status(label, count, color)
+    private def print_status(label, count, color) : Nil
       if count.zero?
         print "#{count} #{label}"
       else
