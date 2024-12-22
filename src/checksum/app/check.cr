@@ -193,9 +193,7 @@ module CheckSum
       print "#{error.class}".colorize(:magenta)
       print ":\t"
       puts filepath
-      if option.verbose?
-        puts " #{error.message}".colorize(:dark_gray)
-      end
+      puts " #{error.message}".colorize(:dark_gray) if option.verbose?
     end
 
     def print_result(result, elapsed_time)
