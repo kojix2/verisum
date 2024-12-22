@@ -1,7 +1,13 @@
 module CheckSum
   class App
     private def resolve_filepath(filename)
-      return "-" if filename == "-"
+      if filename == "-"
+        if File.exists?("-")
+          stderr.puts "[checksum] File “-” exists. Read #{File.expand_path(filename)} instead of standard input"
+        else # stdin
+          return "-"
+        end
+      end
       option.absolute_path? ? File.expand_path(filename) : filename
     end
 
