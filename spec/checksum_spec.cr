@@ -8,6 +8,10 @@ describe CheckSum do
     CheckSum::VERSION.should be_a String
   end
 
+  it "has a source URL" do
+    CheckSum::SOURCE.should be_a String
+  end
+
   it "prints the version number" do
     app = CheckSum::App.new
     app.output = IO::Memory.new
