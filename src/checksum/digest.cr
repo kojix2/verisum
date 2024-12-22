@@ -16,7 +16,7 @@ module CheckSum
       @digest = create_digest_instance
     end
 
-    def create_digest_instance
+    def create_digest_instance : (::Digest::MD5 | ::Digest::SHA1 | ::Digest::SHA256 | ::Digest::SHA512)
       case @algorithm
       when Algorithm::MD5
         ::Digest::MD5.new
@@ -27,7 +27,8 @@ module CheckSum
       when Algorithm::SHA512
         ::Digest::SHA512.new
       else
-        raise CheckSumError.new("Unknown algorithm: #{@algorithm}")
+        # This should never happen
+        raise UnknownAlgorithmError.new("Unknown algorithm: #{@algorithm}")
       end
     end
 
@@ -39,7 +40,7 @@ module CheckSum
       @digest.update(io).hexfinal
     end
 
-    def reset
+    def reset : Nil
       @digest.reset
     end
   end
