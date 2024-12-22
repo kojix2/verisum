@@ -84,17 +84,7 @@ module CheckSum
           digest.reset
         end
 
-        # Get the screen width is time consuming
-        {% if flag?(:term_screen) %}
-          now = Time.utc
-          if index % 100 == 0
-            @screen_width = Term::Screen.width.to_i
-            last_update_col_time = now
-          elsif now - last_update_col_time > Time::Span.new(seconds: 10)
-            @screen_width = Term::Screen.width.to_i
-            last_update_col_time = now
-          end
-        {% end %}
+        update_screen_width(index, last_update_col_time)
 
         update_count_and_print(filepath, index, expected_hash_value, actual_hash_value, error)
       end
@@ -105,6 +95,19 @@ module CheckSum
         mismatch: @n_mismatch,
         error:    @n_error,
       }
+    end
+
+    private def update_screen_width(index, last_update_col_time)
+      {% if flag?(:term_screen) %}
+        now = Time.utc
+        if index % 100 == 0
+          @screen_width = Term::Screen.width.to_i
+          last_update_col_time = now
+        elsif now - last_update_col_time > Time::Span.new(seconds: 10)
+          @screen_width = Term::Screen.width.to_i
+          last_update_col_time = now
+        end
+      {% end %}
     end
 
     def update_count_and_print(filepath, index, expected_hash_value, actual_hash_value, error)
