@@ -131,7 +131,7 @@ module CheckSum
       end
 
       # Flush the output
-      output.flush
+      stdout.flush
     end
 
     private def print_clear_line : Bool

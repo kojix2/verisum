@@ -7,15 +7,17 @@ require "./parser"
 require "./option"
 require "./file_record"
 require "./digest"
+require "./redirect"
 
 require "./app/*"
 
 module CheckSum
   class App
+    include Redirect
+
     getter parser : Parser
     getter option : Option
 
-    property output : IO = STDOUT
     getter exit_code : Int32
 
     EXIT_SUCCESS = 0
@@ -23,17 +25,7 @@ module CheckSum
 
     @screen_width : Int32
 
-    # Override the default output stream
-    private def print(*args)
-      output.print(*args)
-    end
-
-    # Override the default output stream
-    private def puts(*args)
-      output.puts(*args)
-    end
-
-    def initialize(@output : IO = STDOUT)
+    def initialize
       @option = Option.new
       @parser = Parser.new(@option)
 
@@ -70,8 +62,8 @@ module CheckSum
       end
       exit(@exit_code)
     rescue ex
-      STDERR.puts "[checksum] ERROR: #{ex.class} #{ex.message}".colorize(:red).bold
-      STDERR.puts "\n#{ex.backtrace.join("\n")}" if CheckSumError.debug?
+      stderr.puts "[checksum] ERROR: #{ex.class} #{ex.message}".colorize(:red).bold
+      stderr.puts "\n#{ex.backtrace.join("\n")}" if CheckSumError.debug?
       exit(1)
     end
   end

@@ -14,16 +14,16 @@ describe CheckSum do
 
   it "prints the version number" do
     app = CheckSum::App.new
-    app.output = IO::Memory.new
+    app.stdout = IO::Memory.new
     app.print_version
-    app.output.to_s.should eq "checksum #{CheckSum::VERSION}\n"
+    app.stdout.to_s.should eq "checksum #{CheckSum::VERSION}\n"
   end
 
   it "prints help" do
     app = CheckSum::App.new
-    app.output = IO::Memory.new
+    app.stdout = IO::Memory.new
     app.print_help
-    app.output.to_s.should match /Usage: checksum \[options\] \[files ...\]/
+    app.stdout.to_s.should match /Usage: checksum \[options\] \[files ...\]/
   end
 
   it "can parse a md5 checksum file" do
@@ -56,7 +56,7 @@ describe CheckSum do
 
   it "can verify md5 checksums" do
     app = CheckSum::App.new
-    app.output = IO::Memory.new
+    app.stdout = IO::Memory.new
     records = app.parse_checksum_file("spec/fixtures/md5")
     Dir.cd Path[__DIR__] / "fixtures" do
       result = app.verify_file_checksums(records, CheckSum::Algorithm::MD5)
@@ -67,7 +67,7 @@ describe CheckSum do
 
   it "can verify sha1 checksums" do
     app = CheckSum::App.new
-    app.output = IO::Memory.new
+    app.stdout = IO::Memory.new
     records = app.parse_checksum_file("spec/fixtures/sha1")
     Dir.cd Path[__DIR__] / "fixtures" do
       result = app.verify_file_checksums(records, CheckSum::Algorithm::SHA1)
@@ -78,7 +78,7 @@ describe CheckSum do
 
   it "can verify sha256 checksums" do
     app = CheckSum::App.new
-    app.output = IO::Memory.new
+    app.stdout = IO::Memory.new
     records = app.parse_checksum_file("spec/fixtures/sha256")
     Dir.cd Path[__DIR__] / "fixtures" do
       result = app.verify_file_checksums(records, CheckSum::Algorithm::SHA256)
@@ -89,7 +89,7 @@ describe CheckSum do
 
   it "can verify sha512 checksums" do
     app = CheckSum::App.new
-    app.output = IO::Memory.new
+    app.stdout = IO::Memory.new
     records = app.parse_checksum_file("spec/fixtures/sha512")
     Dir.cd Path[__DIR__] / "fixtures" do
       result = app.verify_file_checksums(records, CheckSum::Algorithm::SHA512)
@@ -100,7 +100,7 @@ describe CheckSum do
 
   it "can return exit code 0 when all checksums are correct" do
     app = CheckSum::App.new
-    app.output = IO::Memory.new
+    app.stdout = IO::Memory.new
     records = app.parse_checksum_file("spec/fixtures/md5_correct")
     Dir.cd Path[__DIR__] / "fixtures" do
       result = app.verify_file_checksums(records, CheckSum::Algorithm::MD5)

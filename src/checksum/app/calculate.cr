@@ -8,7 +8,7 @@ module CheckSum
       end
 
       if option.verbose?
-        STDERR.puts "[checksum] (#{format_time_span(elapsed_time)})".colorize(:dark_gray)
+        stderr.puts "[checksum] (#{format_time_span(elapsed_time)})".colorize(:dark_gray)
       end
     end
 
@@ -30,7 +30,7 @@ module CheckSum
           # achieved with wildcards.
           raise IsADirectoryError.new(filename)
         when File::Type::Symlink
-          STDERR.puts "#{filename} is a symbolic link"
+          stderr.puts "#{filename} is a symbolic link"
           # If the file is a symlink, it should not be calculated ?
           # should this return nil or raise an error?
         end

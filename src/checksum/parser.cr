@@ -4,8 +4,12 @@ require "colorize"
 require "./option"
 require "./exception"
 
+require "./redirect"
+
 module CheckSum
   class Parser
+    include Redirect
+
     class NoFileSpecifiedError < CheckSumError
       def initialize
         super("No files specified. Please use '-' to specify standard input.")
@@ -88,12 +92,12 @@ module CheckSum
       end
 
       @opt.invalid_option do |flag|
-        STDERR.puts "#{help_message}\n"
+        stderr.puts "#{help_message}\n"
         raise OptionParser::InvalidOption.new(flag)
       end
 
       @opt.missing_option do |flag|
-        STDERR.puts "#{help_message}\n"
+        stderr.puts "#{help_message}\n"
         raise OptionParser::MissingOption.new(flag)
       end
     end
@@ -101,7 +105,7 @@ module CheckSum
     def parse(argv) : Option
       @opt.parse(argv)
       if argv.empty? && (@option.action == Action::Calculate || @option.action == Action::Check)
-        STDERR.puts "#{help_message}\n"
+        stderr.puts "#{help_message}\n"
         raise NoFileSpecifiedError.new
       end
       @option.filenames = argv
