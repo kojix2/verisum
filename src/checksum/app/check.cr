@@ -96,7 +96,7 @@ module CheckSum
           end
         {% end %}
 
-        update_count_and_print(index, filepath, expected_hash_value, actual_hash_value, error)
+        update_count_and_print(filepath, index, expected_hash_value, actual_hash_value, error)
       end
 
       {
@@ -107,7 +107,7 @@ module CheckSum
       }
     end
 
-    def update_count_and_print(index, filepath, expected_hash_value, actual_hash_value, error)
+    def update_count_and_print(filepath, index, expected_hash_value, actual_hash_value, error)
       filepath = resolve_filepath(filepath)
       total = @n_total
 
