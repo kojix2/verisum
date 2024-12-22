@@ -12,7 +12,7 @@ module CheckSum
       end
     end
 
-    def initialize(@option : Option)
+    def initialize(@option : Option = Option.new)
       @opt = OptionParser.new
       @opt.banner = <<-BANNER
 
@@ -44,8 +44,7 @@ module CheckSum
           when "sha512"
             Algorithm::SHA512
           else
-            e = ArgumentError.new("Unknown algorithm: #{algorithm}")
-            raise e
+            raise ArgumentError.new("Unknown algorithm: #{algorithm}")
           end
       end
 
@@ -99,7 +98,7 @@ module CheckSum
       end
     end
 
-    def parse(argv)
+    def parse(argv) : Option
       @opt.parse(argv)
       if argv.empty? && (@option.action == Action::Calculate || @option.action == Action::Check)
         STDERR.puts "#{help_message}\n"
@@ -109,7 +108,7 @@ module CheckSum
       @option
     end
 
-    def help_message
+    def help_message : String
       @opt.to_s
     end
   end
