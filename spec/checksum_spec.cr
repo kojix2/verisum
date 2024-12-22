@@ -8,6 +8,20 @@ describe CheckSum do
     CheckSum::VERSION.should be_a String
   end
 
+  it "prints the version number" do
+    app = CheckSum::App.new
+    app.output = IO::Memory.new
+    app.print_version
+    app.output.to_s.should eq "checksum #{CheckSum::VERSION}\n"
+  end
+
+  it "prints help" do
+    app = CheckSum::App.new
+    app.output = IO::Memory.new
+    app.print_help
+    app.output.to_s.should match /Usage: checksum \[options\] \[files ...\]/
+  end
+
   it "can parse a md5 checksum file" do
     app = CheckSum::App.new
     records = app.parse_checksum_file("spec/fixtures/md5")
