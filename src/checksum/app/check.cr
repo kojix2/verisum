@@ -202,31 +202,23 @@ module CheckSum
       print_clear_line
 
       # Print the result
-      print "#{result[:total]}"
-      print " files"
+      print "#{result[:total]} files, "
+      print_status("success", result[:success], :green)
       print ", "
-      if result[:success].zero?
-        print "#{result[:success]} success"
-      else
-        print "#{result[:success]} success".colorize(:green)
-      end
+      print_status("mismatch", result[:mismatch], :red)
       print ", "
-      if result[:mismatch].zero?
-        print "#{result[:mismatch]} mismatch"
-      else
-        print "#{result[:mismatch]} mismatch".colorize(:red)
-      end
-      print ", "
-      if result[:error].zero?
-        print "#{result[:error]} errors"
-      else
-        print "#{result[:error]} errors".colorize(:magenta)
-      end
+      print_status("errors", result[:error], :magenta)
 
       # Print the elapsed time
-      print "  (#{format_time_span(elapsed_time)})"
+      puts "  (#{format_time_span(elapsed_time)})"
+    end
 
-      puts
+    private def print_status(label, count, color)
+      if count.zero?
+        print "#{count} #{label}"
+      else
+        print "#{count} #{label}".colorize(color)
+      end
     end
   end
 end
