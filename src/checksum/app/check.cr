@@ -61,10 +61,7 @@ module CheckSum
 
     # Verify the MD5 checksums of the files
     def verify_file_checksums(records : Array(FileRecord), algorithm : Algorithm)
-      @n_total = records.size
-      @n_success = 0
-      @n_mismatch = 0
-      @n_error = 0
+      result = CheckResult.new(total: records.size.to_u64)
 
       digest = Digest.new(algorithm)
 
@@ -86,15 +83,10 @@ module CheckSum
 
         update_screen_width(index, last_update_col_time)
 
-        update_count_and_print(filepath, index, expected_hash_value, actual_hash_value, error)
+        update_count_and_print(result, filepath, index, expected_hash_value, actual_hash_value, error)
       end
 
-      {
-        total:    @n_total,
-        success:  @n_success,
-        mismatch: @n_mismatch,
-        error:    @n_error,
-      }
+      result
     end
 
     private def update_screen_width(index, last_update_col_time)
@@ -110,28 +102,29 @@ module CheckSum
       {% end %}
     end
 
-    def update_count_and_print(filepath, index, expected_hash_value, actual_hash_value, error)
+    def update_count_and_print(result, filepath, index, expected_hash_value, actual_hash_value, error)
       filepath = resolve_filepath(filepath)
-      total = @n_total
+      total = result.total
 
       if error
         print_error_message(filepath, index, total, error)
         @exit_code = EXIT_FAILURE
         @clear_flag = false
-        @n_error += 1
+        result.error += 1
       elsif expected_hash_value == actual_hash_value
         print_ok_message(filepath, index, total)
         @clear_flag = true
-        @n_success += 1
+        result.success += 1
       else
         print_mismatch_message(filepath, index, total, expected_hash_value, actual_hash_value)
         @exit_code = EXIT_FAILURE
         @clear_flag = false
-        @n_mismatch += 1
+        result.mismatch += 1
       end
 
       # Flush the output
       stdout.flush
+      result
     end
 
     private def print_clear_line : Bool
@@ -213,12 +206,12 @@ module CheckSum
       print_clear_line
 
       # Print the result
-      print "#{result[:total]} files, "
-      print_status("success", result[:success], :green)
+      print "#{result.total} files, "
+      print_status("success", result.success, :green)
       print ", "
-      print_status("mismatch", result[:mismatch], :red)
+      print_status("mismatch", result.mismatch, :red)
       print ", "
-      print_status("errors", result[:error], :magenta)
+      print_status("errors", result.error, :magenta)
 
       # Print the elapsed time
       puts "  (#{format_time_span(elapsed_time)})"

@@ -1,7 +1,7 @@
 require "./spec_helper"
 
 NUM_FILES       = 5
-EXPECTED_RESULT = {total: 5, success: 3, mismatch: 1, error: 1}
+EXPECTED_RESULT = CheckSum::App::CheckResult.new(total: 5, success: 3, mismatch: 1, error: 1)
 
 describe CheckSum do
   it "has a version number" do
@@ -104,7 +104,7 @@ describe CheckSum do
     records = app.parse_checksum_file("spec/fixtures/md5_correct")
     Dir.cd Path[__DIR__] / "fixtures" do
       result = app.verify_file_checksums(records, CheckSum::Algorithm::MD5)
-      result.should eq({total: 4, success: 4, mismatch: 0, error: 0})
+      result.to_h.should eq({total: 4, success: 4, mismatch: 0, error: 0})
       app.exit_code.should eq 0
     end
   end

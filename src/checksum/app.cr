@@ -29,11 +29,6 @@ module CheckSum
       @option = Option.new
       @parser = Parser.new(@option)
 
-      @n_total = 0
-      @n_success = 0
-      @n_mismatch = 0
-      @n_error = 0
-
       @screen_width = \
          begin
           ENV.fetch("COLUMNS", 80).to_i
