@@ -82,7 +82,7 @@ module CheckSum
       end
 
       Colorize.on_tty_only! # [auto]
-      @opt.on("-C", "--color WHEN", "when to use color (auto|always|never) [auto]") do |when_|
+      @opt.on("-C", "--color WHEN", "When to use color (auto|always|never) [auto]") do |when_|
         case when_
         when "auto"
           Colorize.on_tty_only!
