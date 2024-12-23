@@ -1,7 +1,4 @@
 require "colorize"
-{% if flag?(:term_screen) %}
-  require "term-screen"
-{% end %}
 
 require "./parser"
 require "./option"
@@ -23,22 +20,19 @@ module CheckSum
     EXIT_SUCCESS = 0
     EXIT_FAILURE = 1
 
-    @screen_width : Int32
-
     def initialize
       @option = Option.new
       @parser = Parser.new(@option)
 
-      @screen_width = \
-         begin
-          ENV.fetch("COLUMNS", 80).to_i
-        rescue
-          80
-        end
-
-      # Term::Screen.width.to_i # tput cols
-
       @exit_code = EXIT_SUCCESS
+    end
+
+    def screen_width : Int32
+      begin
+        ENV.fetch("COLUMNS", 80).to_i
+      rescue
+        80
+      end
     end
 
     def run

@@ -81,25 +81,10 @@ module CheckSum
           digest.reset
         end
 
-        update_screen_width(index, last_update_col_time)
-
         update_count_and_print(result, filepath, index, expected_hash_value, actual_hash_value, error)
       end
 
       result
-    end
-
-    private def update_screen_width(index, last_update_col_time)
-      {% if flag?(:term_screen) %}
-        now = Time.utc
-        if index % 100 == 0
-          @screen_width = Term::Screen.width.to_i
-          last_update_col_time = now
-        elsif now - last_update_col_time > Time::Span.new(seconds: 10)
-          @screen_width = Term::Screen.width.to_i
-          last_update_col_time = now
-        end
-      {% end %}
     end
 
     def update_count_and_print(result, filepath, index, expected_hash_value, actual_hash_value, error)
@@ -155,7 +140,7 @@ module CheckSum
       padding_spaces = [tab_size - (formatted_number.size + 3) % tab_size, 0].max
       print " " * padding_spaces
 
-      available_space = @screen_width - formatted_number.size - 3 - padding_spaces
+      available_space = screen_width - formatted_number.size - 3 - padding_spaces
       filepath = filepath.to_s
 
       if filepath.size > available_space
