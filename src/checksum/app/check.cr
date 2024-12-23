@@ -65,8 +65,6 @@ module CheckSum
 
       digest = Digest.new(algorithm)
 
-      last_update_col_time = Time.utc
-
       records.each_with_index do |file_record, index|
         filepath = file_record.filepath
         expected_hash_value = file_record.checksum
