@@ -156,7 +156,7 @@ module CheckSum
       print_clear_line
 
       print format_file_number(index, total)
-      print "Mismatch Error".colorize(:red)
+      print "Mismatch".colorize(:red)
       print ":\t"
       print filepath
 
@@ -177,7 +177,7 @@ module CheckSum
 
       print format_file_number(index, total)
       if error.class == File::NotFoundError
-        error_name = "NotFound Error"
+        error_name = "NotFound"
       else
         error_name = error.class
       end
