@@ -198,7 +198,12 @@ module CheckSum
       print_clear_line
 
       print format_file_number(index, total)
-      print "#{error.class}".colorize(:magenta)
+      if error.class == File::NotFoundError
+        error_name = "NotFound Error"
+      else
+        error_name = error.class
+      end
+      print "#{error_name}".colorize(:magenta)
       print ":\t"
       puts filepath
       puts " #{error.message}".colorize(:dark_gray) if option.verbose?
