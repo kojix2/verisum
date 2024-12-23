@@ -60,7 +60,7 @@ module CheckSum
     end
 
     # Verify the MD5 checksums of the files
-    def verify_file_checksums(records : Array(FileRecord), algorithm : Algorithm)
+    def verify_file_checksums(records : Array(FileRecord), algorithm : Algorithm) : CheckResult
       result = CheckResult.new(total: records.size.to_u64)
 
       digest = Digest.new(algorithm)
@@ -85,7 +85,7 @@ module CheckSum
       result
     end
 
-    def update_count_and_print(result, filepath, index, expected_hash_value, actual_hash_value, error)
+    def update_count_and_print(result, filepath, index, expected_hash_value, actual_hash_value, error) : CheckResult
       filepath = resolve_filepath(filepath)
       total = result.total
 
@@ -188,15 +188,15 @@ module CheckSum
 
     def print_result(result, elapsed_time) : Nil
       print_clear_line
+
       print " "
       if result.mismatch.zero? && result.error.zero?
         print "✅".colorize(:green).bold
       else
         print "❌".colorize(:red).bold
       end
-
       print "  "
-      # Print the result
+
       print result.to_s
 
       # Print the elapsed time
