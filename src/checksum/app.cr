@@ -7,6 +7,7 @@ require "./digest"
 require "./redirect"
 
 require "./app/*"
+require "../ioctl"
 
 module CheckSum
   class App
@@ -25,14 +26,6 @@ module CheckSum
       @parser = Parser.new(@option)
 
       @exit_code = EXIT_SUCCESS
-    end
-
-    def screen_width : Int32
-      begin
-        ENV.fetch("COLUMNS", 80).to_i
-      rescue
-        80
-      end
     end
 
     def run
