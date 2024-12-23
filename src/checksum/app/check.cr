@@ -138,7 +138,8 @@ module CheckSum
       # Use tab size of 8
       tab_size = 8
       padding_spaces = [tab_size - (formatted_number.size + 3) % tab_size, 0].max
-      print " " * padding_spaces
+      # print " " * padding_spaces
+      print "\t"
 
       available_space = screen_width - formatted_number.size - 3 - padding_spaces
       filepath = filepath.to_s
