@@ -16,6 +16,21 @@ module CheckSum
          error:    error}
       end
 
+      def to_s
+        String.build do |str|
+          str << "#{total} files, "
+          str << format_status("success", success, :green)
+          str << ", "
+          str << format_status("mismatch", mismatch, :red)
+          str << ", "
+          str << format_status("errors", error, :magenta)
+        end
+      end
+
+      private def format_status(label, count, color)
+        count.zero? ? "#{count} #{label}" : "#{count} #{label}".colorize(color).to_s
+      end
+
       def ==(other : self)
         (self.total == other.total) &&
           (self.success == other.success) &&

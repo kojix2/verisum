@@ -188,25 +188,19 @@ module CheckSum
 
     def print_result(result, elapsed_time) : Nil
       print_clear_line
+      print " "
+      if result.mismatch.zero? && result.error.zero?
+        print "✅".colorize(:green).bold
+      else
+        print "❌".colorize(:red).bold
+      end
 
+      print "  "
       # Print the result
-      print "#{result.total} files, "
-      print_status("success", result.success, :green)
-      print ", "
-      print_status("mismatch", result.mismatch, :red)
-      print ", "
-      print_status("errors", result.error, :magenta)
+      print result.to_s
 
       # Print the elapsed time
       puts "  (#{format_time_span(elapsed_time)})"
-    end
-
-    private def print_status(label, count, color) : Nil
-      if count.zero?
-        print "#{count} #{label}"
-      else
-        print "#{count} #{label}".colorize(color)
-      end
     end
   end
 end
