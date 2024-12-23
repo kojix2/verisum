@@ -1,4 +1,20 @@
 require "option_parser"
+
+# Customizable Indentation in OptionParser Help Messages
+# https://github.com/crystal-lang/crystal/issues/14153
+
+class OptionParser
+  private def append_flag(flag, description)
+    indent = " " * 37
+    description = description.gsub("\n", "\n#{indent}")
+    if flag.size >= 23 # 33 -> 23
+      @flags << "    #{flag}\n#{indent}#{description}"
+    else
+      @flags << "    #{flag}#{" " * (23 - flag.size)}#{description}" # 33 -> 23
+    end
+  end
+end
+
 require "colorize"
 
 require "./option"
@@ -36,7 +52,7 @@ module CheckSum
         @option.action = Action::Check
       end
 
-      @opt.on("-a", "--algorithm ALGORITHM", "(md5|sha1|sha256|sha512) [auto]") do |algorithm|
+      @opt.on("-a", "--algorithm ALGO", "(md5|sha1|sha256|sha512) [auto]") do |algorithm|
         @option.algorithm =
           case algorithm.downcase
           when "md5"
