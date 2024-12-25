@@ -16,8 +16,12 @@ module CheckSum
       filename = resolve_filepath(filename)
       check_file_validity(filename)
       algorithm = option.algorithm
-      record = calculate_checksum(filename, algorithm)
-      puts record.to_s
+      if algorithm
+        record = calculate_checksum(filename, algorithm)
+        puts record.to_s
+      else
+        raise NoAlgorithmError.new
+      end
     end
 
     private def check_file_validity(filename : String)

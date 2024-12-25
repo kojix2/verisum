@@ -52,7 +52,7 @@ module CheckSum
         @option.action = Action::Check
       end
 
-      @opt.on("-a", "--algorithm ALGO", "(md5|sha1|sha256|sha512) [auto]") do |algorithm|
+      @opt.on("-a", "--algorithm ALGO", "(md5|sha1|sha256|sha512)") do |algorithm|
         @option.algorithm =
           case algorithm.downcase
           when "md5"

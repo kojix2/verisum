@@ -11,12 +11,7 @@ module CheckSum
       records = parse_checksum_file(filename)
       return if records.empty?
 
-      algorithm =
-        if option.algorithm == Algorithm::AUTO
-          records.first.guess_algorithm
-        else
-          option.algorithm
-        end
+      algorithm = option.algorithm || records.first.guess_algorithm
 
       puts "#{records.size} files in #{(filename == "-" ? "standard input" : filename).colorize.bold}"
 

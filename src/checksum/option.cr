@@ -12,12 +12,11 @@ module CheckSum
     SHA1
     SHA256
     SHA512
-    AUTO
   end
 
   struct Option
     property action : Action = Action::Calculate
-    property algorithm : Algorithm = Algorithm::AUTO
+    property algorithm : Algorithm? = nil
     property filenames : Array(String) = [] of String
     property? clear_line : Bool = true
     property? verbose : Bool = false

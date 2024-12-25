@@ -23,4 +23,10 @@ module CheckSum
 
   class UnknownAlgorithmError < Exception
   end
+
+  class NoAlgorithmError < Exception
+    def initialize
+      super("Please specify an algorithm")
+    end
+  end
 end

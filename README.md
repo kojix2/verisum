@@ -38,7 +38,7 @@ checksum -c md5sum.txt
 ```
   Options;
     -c, --check                      Check the checksum
-    -a, --algorithm ALGORITHM        (md5|sha1|sha256|sha512) [auto]
+    -a, --algorithm ALGORITHM        (md5|sha1|sha256|sha512)
     -A, --absolute                   Output absolute path [false]
     -v, --verbose                    Output checksums and errors, etc [false]
     -C, --color WHEN                 when to use color (auto|always|never) [auto]
