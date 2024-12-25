@@ -1,4 +1,8 @@
 module CheckSum
+  # Provides redirection of standard output and error streams.
+  # Overrides `print` and `puts` to write to `stdout` instead of the default `STDOUT`.
+  # Useful for capturing or redirecting output in tests or custom configurations.
+
   module Redirect
     property stdout : IO = STDOUT
     property stderr : IO = STDERR
