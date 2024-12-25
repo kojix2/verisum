@@ -27,7 +27,7 @@ module CheckSum
       results = nil
       elapsed_time = Time.measure do
         Dir.cd(File.dirname(filename)) do
-          results = verify_file_checksums(records, algorithm)
+          results = verify_checksums(records, algorithm)
         end
       end
 
@@ -54,13 +54,17 @@ module CheckSum
     private def parse_line(line : String) : FileRecord?
       return nil if line =~ /^\s*#/ # Skip comment lines
       sum, path = line.chomp.split
+      # validate checksum length
+      raise ParseError.new(line) if sum.size < 32
+      # validate checksum content
+      raise ParseError.new(line) unless sum =~ /^[0-9a-zA-Z]+$/
       FileRecord.new(sum, Path[path])
     rescue
       raise ParseError.new(line)
     end
 
     # Verify the MD5 checksums of the files
-    def verify_file_checksums(records : Array(FileRecord), algorithm : Algorithm) : CheckResult
+    def verify_checksums(records : Array(FileRecord), algorithm : Algorithm) : CheckResult
       result = CheckResult.new(total: records.size.to_u64)
 
       digest = Digest.new(algorithm)
