@@ -1,9 +1,21 @@
 module CheckSum
   class App
-    private def format_file_number(index, total)
-      total_digits = total.to_s.size
-      formatted_index = (index + 1).to_s.rjust(total_digits, ' ')
-      "(#{formatted_index}/#{total}) "
+    private def resolve_filepath(filename)
+      if filename == "-"
+        if File.exists?("-")
+          stderr.puts "[checksum] File “-” exists. Read #{File.expand_path(filename)} instead of standard input"
+        else # stdin
+          return "-"
+        end
+      end
+      option.absolute_path? ? File.expand_path(filename) : filename
+    end
+
+    def calculate_checksum(filename : String, algorithm : Algorithm) : FileRecord
+      d = Digest.new(algorithm)
+      s = d.hexfinal(filename == "-" ? STDIN : filename)
+      d.reset
+      FileRecord.new(s, Path[filename])
     end
 
     private def format_time_span(span : Time::Span)

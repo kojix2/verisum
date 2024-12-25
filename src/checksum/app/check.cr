@@ -249,5 +249,11 @@ module CheckSum
       # Print the elapsed time
       puts "  (#{format_time_span(elapsed_time)})"
     end
+
+    private def format_file_number(index, total)
+      total_digits = total.to_s.size
+      formatted_index = (index + 1).to_s.rjust(total_digits, ' ')
+      "(#{formatted_index}/#{total}) "
+    end
   end
 end
