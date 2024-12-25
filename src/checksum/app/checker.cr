@@ -8,8 +8,9 @@ module CheckSum
       include Utils
 
       getter option : Option
+      getter exit_code : Int32
 
-      def initialize(@option : Option, @stdout : IO = STDOUT, @stderr : IO = STDERR)
+      def initialize(@option : Option = Option.new, @stdout : IO = STDOUT, @stderr : IO = STDERR)
         @exit_code = EXIT_SUCCESS
         @clear_flag = false
       end
