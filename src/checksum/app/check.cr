@@ -83,30 +83,78 @@ module CheckSum
           digest.reset
         end
 
-        update_count_and_print(result, filepath, index, expected_hash_value, actual_hash_value, error)
+        dispatch(result, filepath, index, expected_hash_value, actual_hash_value, error)
       end
 
       result
     end
 
-    def update_count_and_print(result, filepath, index, expected_hash_value, actual_hash_value, error) : CheckResult
-      filepath = resolve_filepath(filepath)
-      total = result.total
-
+    def evaluate_varification(expected_hash_value, actual_hash_value, error) : Symbol
       if error
-        print_error_message(filepath, index, total, error)
-        @exit_code = EXIT_FAILURE
-        @clear_flag = false
-        result.error += 1
-      elsif expected_hash_value == actual_hash_value
-        print_ok_message(filepath, index, total)
-        @clear_flag = true
-        result.success += 1
+        :error
+      elsif expected_hash_value != actual_hash_value
+        :mismatch
       else
-        print_mismatch_message(filepath, index, total, expected_hash_value, actual_hash_value)
-        @exit_code = EXIT_FAILURE
-        @clear_flag = false
+        :success
+      end
+    end
+
+    def update_counts(result : CheckResult, type : Symbol) : CheckResult
+      case type
+      when :error
+        result.error += 1
+      when :success
+        result.success += 1
+      when :mismatch
         result.mismatch += 1
+      else
+        raise "Unknown type: #{type}"
+      end
+      result
+    end
+
+    def update_status(type : Symbol) : Int32
+      case type
+      when :error
+        @exit_code = EXIT_FAILURE
+      when :success
+        @exit_code # nothing to do
+      when :mismatch
+        @exit_code = EXIT_FAILURE
+      else
+        raise "Unknown type: #{type}"
+      end
+    end
+
+    def update_clear_flag(type : Symbol) : Bool
+      case type
+      when :error
+        @clear_flag = false
+      when :success
+        @clear_flag = true
+      when :mismatch
+        @clear_flag = false
+      else
+        raise "Unknown type: #{type}"
+      end
+    end
+
+    def dispatch(result, filepath, index, expected_hash_value, actual_hash_value, error) : CheckResult
+      type = evaluate_varification(expected_hash_value, actual_hash_value, error)
+      update_counts(result, type)
+      update_status(type)
+      update_clear_flag(type)
+
+      total = result.total
+      filepath = resolve_filepath(filepath)
+
+      case type
+      when :error
+        print_error_message(filepath, index, total, error.not_nil!)
+      when :success
+        print_ok_message(filepath, index, total)
+      when :mismatch
+        print_mismatch_message(filepath, index, total, expected_hash_value, actual_hash_value)
       end
 
       # Flush the output
