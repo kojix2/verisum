@@ -125,7 +125,7 @@ module CheckSum
 
     def parse(argv) : Option
       @opt.parse(argv)
-      if argv.empty? && (@option.action == Action::Calculate || @option.action == Action::Check)
+      if argv.empty? && (@option.action == Action::Compute || @option.action == Action::Check)
         stderr.puts "#{help_message}\n"
         raise NoFileSpecifiedError.new
       end

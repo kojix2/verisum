@@ -1,6 +1,6 @@
 module CheckSum
   enum Action
-    Calculate
+    Compute
     Check
     Version
     Help
@@ -15,7 +15,7 @@ module CheckSum
   end
 
   struct Option
-    property action : Action = Action::Calculate
+    property action : Action = Action::Compute
     property algorithm : Algorithm? = nil
     property filenames : Array(String) = [] of String
     property? clear_line : Bool = true

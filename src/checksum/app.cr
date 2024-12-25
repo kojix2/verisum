@@ -16,25 +16,21 @@ module CheckSum
     getter parser : Parser
     getter option : Option
 
-    getter exit_code : Int32
-
     EXIT_SUCCESS = 0
     EXIT_FAILURE = 1
 
     def initialize
       @option = Option.new
       @parser = Parser.new(@option)
-
-      @exit_code = EXIT_SUCCESS
     end
 
     def run
       @option = parser.parse(ARGV)
-      case option.action
-      when Action::Calculate
-        run_calculate
+      exit case option.action
+      when Action::Compute
+        Computer.new(option).run
       when Action::Check
-        run_check
+        Checker.new(option).run
       when Action::Version
         print_version
       when Action::Help
@@ -42,7 +38,6 @@ module CheckSum
       else
         print_help
       end
-      exit(@exit_code)
     rescue ex
       stderr.puts "[checksum] ERROR: #{ex.class} #{ex.message}".colorize(:red).bold
       stderr.puts "\n#{ex.backtrace.join("\n")}" if CheckSumError.debug?
