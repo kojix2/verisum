@@ -8,12 +8,13 @@ module CheckSum
       include Utils
 
       getter option : Option
+      getter exit_code : Int32
 
       def initialize(@option : Option, @stdout : IO = STDOUT, @stderr : IO = STDERR)
         @exit_code = EXIT_SUCCESS
       end
 
-      def run
+      def run : Int32
         elapsed_time = Time.measure do
           option.filenames.each do |filename|
             calculate_file_checksum(filename)

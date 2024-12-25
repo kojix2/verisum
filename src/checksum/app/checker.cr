@@ -15,7 +15,7 @@ module CheckSum
         @clear_flag = false
       end
 
-      def run
+      def run : Int32
         option.filenames.each do |filename|
           run_check_file(filename)
         end
