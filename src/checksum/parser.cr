@@ -4,13 +4,17 @@ require "option_parser"
 # https://github.com/crystal-lang/crystal/issues/14153
 
 class OptionParser
+  # Adds a property for summary_width
+  property summary_width : Int32 = 33
+
   private def append_flag(flag, description)
-    indent = " " * 37
+    indent = " " * (summary_width + 4) # Adjust the indent based on summary_width
     description = description.gsub("\n", "\n#{indent}")
-    if flag.size >= 23 # 33 -> 23
+
+    if flag.size >= summary_width
       @flags << "    #{flag}\n#{indent}#{description}"
     else
-      @flags << "    #{flag}#{" " * (23 - flag.size)}#{description}" # 33 -> 23
+      @flags << "    #{flag}#{" " * (summary_width - flag.size)}#{description}"
     end
   end
 end
@@ -34,6 +38,7 @@ module CheckSum
 
     def initialize(@option : Option = Option.new)
       @opt = OptionParser.new
+      @opt.summary_width = 23
       @opt.banner = <<-BANNER
 
         Program: checksum
