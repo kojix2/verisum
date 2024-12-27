@@ -8,4 +8,8 @@ targets:
   checksum:
     main: src/cli.cr
 
+dependencies:
+  uniwidth:
+    github: naqvis/uni_char_width
+
 license: MIT

@@ -1,3 +1,5 @@
+require "uniwidth"
+
 require "../redirect"
 require "./utils"
 
@@ -204,7 +206,7 @@ module CheckSum
         filepath = filepath.to_s
 
         if filepath.size > available_space
-          print "...#{filepath[-(available_space - 3)..-1]}"
+          print "...#{UnicodeCharWidth.wrap(filepath, available_space - 3)}"
         else
           print filepath
         end
