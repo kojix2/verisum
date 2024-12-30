@@ -64,7 +64,10 @@ module CheckSum
 
       private def parse_line(line : String) : FileRecord?
         return nil if line =~ /^\s*#/ # Skip comment lines
-        sum, path = line.chomp.split
+        match = line.match(/^([0-9a-zA-Z]+)\s+(.*)$/)
+        raise ParseError.new(line) unless match
+        sum = match[1]
+        path = match[2]
         # validate checksum length
         raise ParseError.new(line) if sum.size < 32
         # validate checksum content
