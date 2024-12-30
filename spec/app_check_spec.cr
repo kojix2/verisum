@@ -90,4 +90,62 @@ describe CheckSum::App do
       end
     end
   end
+
+  describe "#print methods" do
+    it "prints OK message correctly" do
+      checker = CheckSum::App::Checker.new
+      checker.stdout = IO::Memory.new
+      checker.print_ok_message("/short/path", 0, NUM_FILES)
+      output = checker.stdout.to_s
+      output.should contain "OK".colorize(:green).to_s
+      output.should contain "(1/#{NUM_FILES})"
+      output.should contain "/short/path"
+    end
+
+    it "prints truncated long file paths in OK message" do
+      checker = CheckSum::App::Checker.new
+      checker.stdout = IO::Memory.new
+      checker.screen_width = 25
+      long_path = "/a/very/long/path/that/needs/truncation"
+      checker.print_ok_message(long_path, 0, NUM_FILES)
+      output = checker.stdout.to_s
+      output.should contain "...cation"
+      output.should_not contain "/a/very/long/path"
+    end
+
+    it "prints mismatch message with details when verbose is enabled" do
+      checker = CheckSum::App::Checker.new
+      checker.stdout = IO::Memory.new
+      checker.option.verbose = true
+      checker.print_mismatch_message(__FILE__, 1, NUM_FILES, "expected_hash", "actual_hash")
+      output = checker.stdout.to_s
+      output.should contain "Mismatch".colorize(:red).to_s
+      output.should contain "expected: expected_hash"
+      output.should contain "actual:   actual_hash"
+    end
+
+    it "prints error message for file not found" do
+      checker = CheckSum::App::Checker.new
+      checker.stdout = IO::Memory.new
+      error = File::NotFoundError.new("File not found", file: "/missing/file")
+      checker.print_error_message("/missing/file", 2, NUM_FILES, error)
+      output = checker.stdout.to_s
+      output.should contain "NotFound".colorize(:magenta).to_s
+      output.should contain "/missing/file"
+    end
+
+    it "prints result summary correctly" do
+      checker = CheckSum::App::Checker.new
+      checker.stdout = IO::Memory.new
+      result = CheckSum::App::CheckResult.new(total: 5, success: 4, mismatch: 1, error: 0)
+      elapsed_time = Time::Span.new(nanoseconds: 1234567890)
+      checker.print_result(result, elapsed_time)
+      output = checker.stdout.to_s
+      output.should contain "4 successes".colorize(:green).to_s
+      output.should contain "1 mismatch".colorize(:red).to_s
+      output.should_not contain "1 mismatches".colorize(:red).to_s
+      output.should contain "0 errors"
+      output.should contain "(1.23 seconds)"
+    end
+  end
 end

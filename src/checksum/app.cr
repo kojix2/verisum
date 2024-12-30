@@ -7,7 +7,7 @@ require "./digest"
 require "./redirect"
 
 require "./app/*"
-require "../ioctl"
+require "./ioctl"
 
 module CheckSum
   class App

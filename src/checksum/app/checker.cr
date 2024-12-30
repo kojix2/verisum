@@ -9,10 +9,16 @@ module CheckSum
 
       getter option : Option
       getter exit_code : Int32
+      setter screen_width : Int32?
 
       def initialize(@option : Option = Option.new, @stdout : IO = STDOUT, @stderr : IO = STDERR)
         @exit_code = EXIT_SUCCESS
         @clear_flag = false
+        @screen_width = nil
+      end
+
+      def screen_width
+        @screen_width || CheckSum.screen_width
       end
 
       def run : Int32

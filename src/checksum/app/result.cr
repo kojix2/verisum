@@ -18,16 +18,17 @@ module CheckSum
 
       def to_s
         String.build do |str|
-          str << "#{total} files, "
-          str << format_status("success", success, :green)
+          str << "#{total} #{total == 1 ? "file" : "files"}, "
+          str << format_status("success", "successes", success, :green)
           str << ", "
-          str << format_status("mismatch", mismatch, :red)
+          str << format_status("mismatch", "mismatches", mismatch, :red)
           str << ", "
-          str << format_status("errors", error, :magenta)
+          str << format_status("error", "errors", error, :magenta)
         end
       end
 
-      private def format_status(label, count, color)
+      private def format_status(singular, plural, count, color)
+        label = count == 1 ? singular : plural
         count.zero? ? "#{count} #{label}" : "#{count} #{label}".colorize(color).to_s
       end
 
