@@ -23,7 +23,6 @@ require "colorize"
 
 require "./option"
 require "./exception"
-
 require "./redirect"
 
 module CheckSum

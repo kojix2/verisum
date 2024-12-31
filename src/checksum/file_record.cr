@@ -7,6 +7,7 @@ module CheckSum
     def initialize(@checksum, @filepath)
     end
 
+    # Returns the algorithm used to calculate the checksum based on the checksum pattern
     def guess_algorithm : Algorithm
       case checksum
       when /^[0-9a-f]{32}$/  then Algorithm::MD5
@@ -18,6 +19,8 @@ module CheckSum
       end
     end
 
+    # Return the string representation of the FileRecord
+    # If the file path is "-", return only the checksum (for standard input)
     def to_s
       return checksum if filepath == Path["-"]
       "#{checksum}  #{filepath}"

@@ -10,6 +10,7 @@ require "./app/*"
 require "./ioctl"
 
 module CheckSum
+  # The main application class.
   class App
     include Redirect
 
@@ -24,6 +25,9 @@ module CheckSum
       @parser = Parser.new(@option)
     end
 
+    # Runs the checksum application with the given arguments.
+    #
+    # Returns the exit code.
     def run(argv = ARGV) : Int32
       @option = parser.parse(argv)
       case option.action
