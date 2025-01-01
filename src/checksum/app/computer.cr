@@ -15,16 +15,21 @@ module CheckSum
       end
 
       def run : Int32
-        elapsed_time = Time.measure do
+        elapsed_time = process_files
+        print_summary(elapsed_time) if option.verbose?
+        @exit_code
+      end
+
+      private def process_files
+        Time.measure do
           option.filenames.each do |filename|
             calculate_file_checksum(filename)
           end
         end
+      end
 
-        if option.verbose?
-          stderr.puts "[checksum] (#{format_time_span(elapsed_time)})".colorize(:dark_gray)
-        end
-        @exit_code
+      private def print_summary(elapsed_time)
+        stderr.puts "[checksum] (#{format_time_span(elapsed_time)})".colorize(:dark_gray)
       end
 
       def calculate_file_checksum(filename : String)
