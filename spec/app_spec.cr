@@ -27,7 +27,7 @@ describe CheckSum::App do
     it "sets exit code to 0 when all checksums are verified successfully" do
       app = CheckSum::App.new
       app.stdout = IO::Memory.new
-      e = app.run(["-c", "spec/fixtures/md5_correct"])
+      e = app.run(["spec/fixtures/md5_correct"])
       e.should eq 0
     end
   end
@@ -40,7 +40,7 @@ describe CheckSum::App do
     it "sets exit coce to 1 when there is a checksum mismatch or an error" do
       app = CheckSum::App.new
       app.stdout = IO::Memory.new
-      e = app.run(["-c", "spec/fixtures/md5"])
+      e = app.run(["spec/fixtures/md5"])
       e.should eq 1
     end
   end

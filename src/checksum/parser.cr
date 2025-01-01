@@ -52,8 +52,8 @@ module CheckSum
         Options;
       BANNER
 
-      @opt.on("-c", "--check", "Check the checksum") do
-        @option.action = Action::Check
+      @opt.on("-c", "--calc", "Compute checksums") do
+        @option.action = Action::Compute
       end
 
       @opt.on("-a", "--algorithm ALGO", "(md5|sha1|sha256|sha512)") do |algorithm|

@@ -15,7 +15,7 @@ module CheckSum
   end
 
   struct Option
-    property action : Action = Action::Compute
+    property action : Action = Action::Check
     property algorithm : Algorithm? = nil
     property filenames : Array(String) = [] of String
     property? clear_line : Bool = true

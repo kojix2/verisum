@@ -37,7 +37,7 @@ checksum -c md5sum.txt
 
 ```
   Options;
-    -c, --check                      Check the checksum
+    -c, --calc                       Compute checksums
     -a, --algorithm ALGORITHM        (md5|sha1|sha256|sha512)
     -A, --absolute                   Output absolute path [false]
     -v, --verbose                    Output checksums and errors, etc [false]
@@ -50,7 +50,7 @@ checksum -c md5sum.txt
 To verify the checksums with:
 
 ```sh
-checksum -c md5.txt
+checksum md5.txt
 ```
 
 Example output:
@@ -63,7 +63,7 @@ Example output:
 To generate checksums and save them to a file, use:
 
 ```sh
-checksum -a md5 * | tee md5.txt
+checksum -c -a md5 * | tee md5.txt
 ```
 
 Example output:
