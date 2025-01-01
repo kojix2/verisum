@@ -33,6 +33,20 @@ describe CheckSum::App do
       records.size.should eq NUM_FILES
     end
 
+    it "can parse a file with a BOM + record" do
+      checker = CheckSum::App::Checker.new
+      records = checker.parse_checksum_file("spec/fixtures/md5_bom1")
+      records.should be_a Array(CheckSum::FileRecord)
+      records.size.should eq NUM_FILES
+    end
+
+    it "can parse a file with a BOM + comment" do
+      checker = CheckSum::App::Checker.new
+      records = checker.parse_checksum_file("spec/fixtures/md5_bom2")
+      records.should be_a Array(CheckSum::FileRecord)
+      records.size.should eq NUM_FILES
+    end
+
     it "raises an error when the file corrupt" do
       checker = CheckSum::App::Checker.new
       checker.stderr = IO::Memory.new

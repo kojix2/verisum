@@ -63,24 +63,13 @@ module CheckSum
       end
 
       private def parse_lines(io : IO) : Array(FileRecord)
-        result = Array(FileRecord?).new
-
-        # Get the first line
-        first_line = io.gets
-        return result.compact unless first_line
-
-        # Remove the BOM if it exists
-        first_line = first_line[1..-1] if first_line.starts_with?("\xEF\xBB\xBF")
-        result << parse_line(first_line)
-
-        io.each_line do |line|
-          result << parse_line(line)
-        end
-
-        result.compact
+        io.each_line.map do |line|
+          parse_line(line)
+        end.to_a.compact
       end
 
       private def parse_line(line : String) : FileRecord?
+        line = remove_bom(line)
         return nil if line =~ /^\s*#/ # Skip comment lines
         match = line.match(/^([0-9a-zA-Z]+)\s+(.*)$/)
         raise ParseError.new(line) unless match
