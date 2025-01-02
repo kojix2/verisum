@@ -3,7 +3,7 @@ require "./spec_helper"
 NUM_FILES       = 5
 EXPECTED_RESULT = CheckSum::App::CheckResult.new(total: 5, success: 3, mismatch: 1, error: 1)
 
-describe CheckSum::App do
+describe CheckSum::App::Checker do
   describe "#parse_checksum_file" do
     it "can parse a md5 checksum file" do
       checker = CheckSum::App::Checker.new
