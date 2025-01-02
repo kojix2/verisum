@@ -20,28 +20,27 @@ module CheckSum
         @exit_code
       end
 
-      private def process_files
+      private def process_files : Time::Span
         Time.measure do
           option.filenames.each do |filename|
-            calculate_file_checksum(filename)
+            puts calculate_file_checksum(filename)
           end
         end
       end
 
-      private def print_summary(elapsed_time)
+      private def print_summary(elapsed_time) : Nil
         stderr.puts "[checksum] (#{format_time_span(elapsed_time)})".colorize(:dark_gray)
       end
 
-      def calculate_file_checksum(filename : String)
+      def calculate_file_checksum(filename : String) : FileRecord
         filename = resolve_filepath(filename)
         check_file_validity(filename)
 
         algorithm = select_algorithm
-        record = calculate_checksum(filename, algorithm)
-        puts record.to_s
+        calculate_checksum(filename, algorithm)
       end
 
-      private def select_algorithm
+      private def select_algorithm : Algorithm
         option.algorithm || raise NoAlgorithmError.new
       end
 
