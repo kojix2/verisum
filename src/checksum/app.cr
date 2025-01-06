@@ -32,9 +32,9 @@ module CheckSum
       @option = parser.parse(argv)
       case option.action
       when Action::Compute
-        Computer.new(option, stdout, stderr).run
+        Computer.run(option, stdout, stderr)
       when Action::Check
-        Checker.new(option, stdout, stderr).run
+        Checker.run(option, stdout, stderr)
       when Action::Version
         print_version(stdout); EXIT_SUCCESS
       when Action::Help

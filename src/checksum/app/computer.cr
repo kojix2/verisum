@@ -10,6 +10,10 @@ module CheckSum
       getter option : Option
       getter exit_code : Int32
 
+      def self.run(option : Option, stdout : IO, stderr : IO) : Int32
+        new(option, stdout, stderr).run
+      end
+
       def initialize(@option : Option, @stdout : IO = STDOUT, @stderr : IO = STDERR)
         @exit_code = EXIT_SUCCESS
       end
