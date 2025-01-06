@@ -1,3 +1,5 @@
+require "../spec_helper"
+
 describe CheckSum::App do
   describe CheckSum::Action::Help do
     it "displays the help message" do

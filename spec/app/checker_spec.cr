@@ -1,4 +1,4 @@
-require "./spec_helper"
+require "../spec_helper"
 
 NUM_FILES       = 5
 EXPECTED_RESULT = CheckSum::App::CheckResult.new(total: 5, success: 3, mismatch: 1, error: 1)
@@ -64,7 +64,7 @@ describe CheckSum::App::Checker do
       checker = CheckSum::App::Checker.new
       checker.stdout = IO::Memory.new
       records = checker.parse_checksum_file("spec/fixtures/md5")
-      Dir.cd Path[__DIR__] / "fixtures" do
+      Dir.cd Path[__DIR__].parent / "fixtures" do
         result = checker.verify_checksums(records, CheckSum::Algorithm::MD5)
         result.should eq EXPECTED_RESULT
         checker.exit_code.should eq 1
@@ -75,7 +75,7 @@ describe CheckSum::App::Checker do
       checker = CheckSum::App::Checker.new
       checker.stdout = IO::Memory.new
       records = checker.parse_checksum_file("spec/fixtures/sha1")
-      Dir.cd Path[__DIR__] / "fixtures" do
+      Dir.cd Path[__DIR__].parent / "fixtures" do
         result = checker.verify_checksums(records, CheckSum::Algorithm::SHA1)
         result.should eq EXPECTED_RESULT
         checker.exit_code.should eq 1
@@ -86,7 +86,7 @@ describe CheckSum::App::Checker do
       checker = CheckSum::App::Checker.new
       checker.stdout = IO::Memory.new
       records = checker.parse_checksum_file("spec/fixtures/sha256")
-      Dir.cd Path[__DIR__] / "fixtures" do
+      Dir.cd Path[__DIR__].parent / "fixtures" do
         result = checker.verify_checksums(records, CheckSum::Algorithm::SHA256)
         result.should eq EXPECTED_RESULT
         checker.exit_code.should eq 1
@@ -97,7 +97,7 @@ describe CheckSum::App::Checker do
       checker = CheckSum::App::Checker.new
       checker.stdout = IO::Memory.new
       records = checker.parse_checksum_file("spec/fixtures/sha512")
-      Dir.cd Path[__DIR__] / "fixtures" do
+      Dir.cd Path[__DIR__].parent / "fixtures" do
         result = checker.verify_checksums(records, CheckSum::Algorithm::SHA512)
         result.should eq EXPECTED_RESULT
         checker.exit_code.should eq 1

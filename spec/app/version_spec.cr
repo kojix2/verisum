@@ -1,3 +1,5 @@
+require "../spec_helper"
+
 describe CheckSum::App do
   describe CheckSum::Action::Version do
     it "outputs the application version" do
