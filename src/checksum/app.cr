@@ -20,6 +20,10 @@ module CheckSum
     EXIT_SUCCESS = 0
     EXIT_FAILURE = 1
 
+    def self.run(argv = ARGV) : Int32
+      new.run(argv)
+    end
+
     def initialize
       @option = Option.new
       @parser = Parser.new(@option)

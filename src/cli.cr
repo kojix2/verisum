@@ -1,3 +1,3 @@
 require "./checksum"
 
-exit(CheckSum::App.new.run)
+exit(CheckSum::App.run)
