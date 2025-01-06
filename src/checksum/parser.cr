@@ -112,12 +112,14 @@ module CheckSum
       end
 
       @opt.invalid_option do |flag|
-        stderr.puts "#{help_message}\n"
+        help_message(stderr)
+        stderr << "\n\n"
         raise OptionParser::InvalidOption.new(flag)
       end
 
       @opt.missing_option do |flag|
-        stderr.puts "#{help_message}\n"
+        help_message(stderr)
+        stderr << "\n\n"
         raise OptionParser::MissingOption.new(flag)
       end
     end
@@ -125,15 +127,15 @@ module CheckSum
     def parse(argv) : Option
       @opt.parse(argv)
       if argv.empty? && (@option.action == Action::Compute || @option.action == Action::Check)
-        stderr.puts "#{help_message}\n"
+        help_message(stderr)
         raise NoFileSpecifiedError.new
       end
       @option.filenames = argv
       @option
     end
 
-    def help_message : String
-      @opt.to_s
+    def help_message(io : IO)
+      @opt.to_s(io)
     end
   end
 end

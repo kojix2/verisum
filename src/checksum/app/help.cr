@@ -1,8 +1,8 @@
 module CheckSum
   class App
-    def print_help
-      puts parser.help_message
-      EXIT_SUCCESS
+    def print_help(io : IO)
+      parser.help_message(io)
+      io << "\n"
     end
   end
 end

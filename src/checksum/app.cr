@@ -36,11 +36,11 @@ module CheckSum
       when Action::Check
         Checker.new(option, stdout, stderr).run
       when Action::Version
-        print_version
+        print_version(stdout); EXIT_SUCCESS
       when Action::Help
-        print_help
+        print_help(stdout); EXIT_SUCCESS
       else
-        print_help
+        print_help(stderr); EXIT_FAILURE
       end
     rescue ex
       stderr.puts "[checksum] ERROR: #{ex.class} #{ex.message}".colorize(:red).bold

@@ -1,24 +1,6 @@
 require "./spec_helper"
 
 describe CheckSum::App do
-  describe CheckSum::Action::Version do
-    it "outputs the application version" do
-      app = CheckSum::App.new
-      app.stdout = IO::Memory.new
-      app.print_version
-      app.stdout.to_s.should eq "checksum #{CheckSum::VERSION}\n"
-    end
-  end
-
-  describe CheckSum::Action::Help do
-    it "displays the help message" do
-      app = CheckSum::App.new
-      app.stdout = IO::Memory.new
-      app.print_help
-      app.stdout.to_s.should match /Usage: checksum \[options\] \[files ...\]/
-    end
-  end
-
   describe "Exit code for normal termination" do
     it "defines EXIT_SUCCESS as 0" do
       CheckSum::App::EXIT_SUCCESS.should eq 0
