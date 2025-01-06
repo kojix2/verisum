@@ -16,15 +16,13 @@ module CheckSum
          error:    error}
       end
 
-      def to_s
-        String.build do |str|
-          str << "#{total} #{total == 1 ? "file" : "files"}, "
-          str << format_status("success", "successes", success, :green)
-          str << ", "
-          str << format_status("mismatch", "mismatches", mismatch, :red)
-          str << ", "
-          str << format_status("error", "errors", error, :magenta)
-        end
+      def to_s(io)
+        io << "#{total} #{total == 1 ? "file" : "files"}, "
+        io << format_status("success", "successes", success, :green)
+        io << ", "
+        io << format_status("mismatch", "mismatches", mismatch, :red)
+        io << ", "
+        io << format_status("error", "errors", error, :magenta)
       end
 
       private def format_status(singular, plural, count, color)
