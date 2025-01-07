@@ -1,8 +1,8 @@
 module CheckSum
   # Define a FileRecord structure to store the checksum and file path
   struct FileRecord
-    property checksum : String
-    property filepath : Path
+    getter checksum : String
+    getter filepath : Path
 
     def initialize(@checksum, @filepath)
     end
@@ -25,9 +25,7 @@ module CheckSum
       if filepath == Path["-"]
         io << checksum
       else
-        io << checksum
-        io << "  "
-        io << filepath
+        io << checksum << "  " << filepath
       end
     end
   end
