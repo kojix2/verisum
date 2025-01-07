@@ -21,7 +21,7 @@ module CheckSum
 
     # Return the string representation of the FileRecord
     # If the file path is "-", return only the checksum (for standard input)
-    def to_s(io)
+    def to_s(io) : Nil
       if filepath == Path["-"]
         io << checksum
       else

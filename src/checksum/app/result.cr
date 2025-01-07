@@ -16,7 +16,7 @@ module CheckSum
          error:    error}
       end
 
-      def to_s(io)
+      def to_s(io) : Nil
         io << "#{total} #{total == 1 ? "file" : "files"}, "
         io << format_status("success", "successes", success, :green)
         io << ", "
