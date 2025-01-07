@@ -26,54 +26,140 @@ describe CheckSum::Digest do
   end
 
   it "computes the correct MD5 checksum of a file" do
-    expected_checksum = "d41d8cd98f00b204e9800998ecf8427e"
-    File.tempfile("checksum_test", "md5") do |temp_file|
-      temp_file.print("Test data for checksumming")
-      digest = CheckSum::Digest.new(CheckSum::Algorithm::MD5)
-      digest.hexfinal(temp_file.path).should eq expected_checksum
-
-      digest.reset
-      digest = CheckSum::Digest.new(CheckSum::Algorithm::MD5)
-      digest.hexfinal(temp_file.path).should eq expected_checksum
+    expected_checksum = "351e24791b33e60193200ebe8c92fb4e"
+    temp_file = File.tempfile("checksum_test", "md5") do |file|
+      file.print("Test data for checksumming")
     end
+    begin
+      output = IO::Memory.new
+      status = Process.run("md5sum", {temp_file.path}, output: output)
+      if status.success?
+        output.to_s.should contain(expected_checksum)
+      end
+    rescue File::NotFoundError
+      # md5sum is not available
+    end
+    digest = CheckSum::Digest.new(CheckSum::Algorithm::MD5)
+    digest.hexfinal(temp_file.path).should eq expected_checksum
+    # no need to reset the digest
+    digest.hexfinal(temp_file.path).should eq expected_checksum
+    temp_file.delete
+  end
+
+  it "computes the correct MD5 checksum of a string" do
+    expected_checksum = "351e24791b33e60193200ebe8c92fb4e"
+    io = IO::Memory.new
+    io.print("Test data for checksumming")
+    io.rewind
+    digest = CheckSum::Digest.new(CheckSum::Algorithm::MD5)
+    digest.hexfinal(io).should eq expected_checksum
+    # no need to reset the digest
+    io.rewind
+    digest.hexfinal(io).should eq expected_checksum
   end
 
   it "computes the correct SHA1 checksum of a file" do
-    expected_checksum = "da39a3ee5e6b4b0d3255bfef95601890afd80709"
-    File.tempfile("checksum_test", "sha1") do |temp_file|
-      temp_file.print("Test data for checksumming")
-      digest = CheckSum::Digest.new(CheckSum::Algorithm::SHA1)
-      digest.hexfinal(temp_file.path).should eq expected_checksum
-
-      digest.reset
-      digest = CheckSum::Digest.new(CheckSum::Algorithm::SHA1)
-      digest.hexfinal(temp_file.path).should eq expected_checksum
+    expected_checksum = "28f35c8c618f554f2f045acace29ef9aa045cb5c"
+    temp_file = File.tempfile("checksum_test", "sha1") do |file|
+      file.print("Test data for checksumming")
     end
+    begin
+      output = IO::Memory.new
+      status = Process.run("sha1sum", {temp_file.path}, output: output)
+      if status.success?
+        output.to_s.should contain(expected_checksum)
+      end
+    rescue File::NotFoundError
+      # sha1sum is not available
+    end
+    digest = CheckSum::Digest.new(CheckSum::Algorithm::SHA1)
+    digest.hexfinal(temp_file.path).should eq expected_checksum
+    # no need to reset the digest
+    digest.hexfinal(temp_file.path).should eq expected_checksum
+    temp_file.delete
+  end
+
+  it "computes the correct SHA1 checksum of a string" do
+    expected_checksum = "28f35c8c618f554f2f045acace29ef9aa045cb5c"
+    io = IO::Memory.new
+    io.print("Test data for checksumming")
+    io.rewind
+    digest = CheckSum::Digest.new(CheckSum::Algorithm::SHA1)
+    digest.hexfinal(io).should eq expected_checksum
+    # no need to reset the digest
+    io.rewind
+    digest.hexfinal(io).should eq expected_checksum
   end
 
   it "computes the correct SHA256 checksum of a file" do
-    expected_checksum = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-    File.tempfile("checksum_test", "sha256") do |temp_file|
-      temp_file.print("Test data for checksumming")
-      digest = CheckSum::Digest.new(CheckSum::Algorithm::SHA256)
-      digest.hexfinal(temp_file.path).should eq expected_checksum
-
-      digest.reset
-      digest = CheckSum::Digest.new(CheckSum::Algorithm::SHA256)
-      digest.hexfinal(temp_file.path).should eq expected_checksum
+    expected_checksum = "8dea90c10a14fc1d845b9cb393eba69f7aeaf898921b9d7b4f782b2328ed369e"
+    temp_file = File.tempfile("checksum_test", "sha256") do |file|
+      file.print("Test data for checksumming")
     end
+    begin
+      output = IO::Memory.new
+      status = Process.run("sha256sum", {temp_file.path}, output: output)
+      if status.success?
+        output.to_s.should contain(expected_checksum)
+      end
+    rescue File::NotFoundError
+      # sha256sum is not available
+    end
+    digest = CheckSum::Digest.new(CheckSum::Algorithm::SHA256)
+    digest.hexfinal(temp_file.path).should eq expected_checksum
+    # no need to reset the digest
+    digest.hexfinal(temp_file.path).should eq expected_checksum
+    temp_file.delete
+  end
+
+  it "computes the correct SHA256 checksum of a string" do
+    expected_checksum = "8dea90c10a14fc1d845b9cb393eba69f7aeaf898921b9d7b4f782b2328ed369e"
+    io = IO::Memory.new
+    io.print("Test data for checksumming")
+    io.rewind
+    digest = CheckSum::Digest.new(CheckSum::Algorithm::SHA256)
+    digest.hexfinal(io).should eq expected_checksum
+    # no need to reset the digest
+    io.rewind
+    digest.hexfinal(io).should eq expected_checksum
   end
 
   it "computes the correct SHA512 checksum of a file" do
-    expected_checksum = "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e"
-    File.tempfile("checksum_test", "sha512") do |temp_file|
-      temp_file.print("Test data for checksumming")
-      digest = CheckSum::Digest.new(CheckSum::Algorithm::SHA512)
-      digest.hexfinal(temp_file.path).should eq expected_checksum
+    expected_checksum = "8caa15bb97f7f3efd3a333b49791a1fff6921736c83a2f083439a56cee0f64278a980eb6ddd62457849525adb4b32a4df539e8264c9b2582940ffe690e80e76a"
+    temp_file = File.tempfile("checksum_test", "sha512") do |file|
+      file.print("Test data for checksumming")
+    end
+    begin
+      output = IO::Memory.new
+      status = Process.run("sha512sum", {temp_file.path}, output: output)
+      if status.success?
+        output.to_s.should contain(expected_checksum)
+      end
+    rescue File::NotFoundError
+      # sha512sum is not available
+    end
+    digest = CheckSum::Digest.new(CheckSum::Algorithm::SHA512)
+    digest.hexfinal(temp_file.path).should eq expected_checksum
+    # no need to reset the digest
+    digest.hexfinal(temp_file.path).should eq expected_checksum
+    temp_file.delete
+  end
 
-      digest.reset
-      digest = CheckSum::Digest.new(CheckSum::Algorithm::SHA512)
-      digest.hexfinal(temp_file.path).should eq expected_checksum
+  it "computes the correct SHA512 checksum of a string" do
+    expected_checksum = "8caa15bb97f7f3efd3a333b49791a1fff6921736c83a2f083439a56cee0f64278a980eb6ddd62457849525adb4b32a4df539e8264c9b2582940ffe690e80e76a"
+    io = IO::Memory.new
+    io.print("Test data for checksumming")
+    io.rewind
+    digest = CheckSum::Digest.new(CheckSum::Algorithm::SHA512)
+    digest.hexfinal(io).should eq expected_checksum
+    # no need to reset the digest
+    io.rewind
+    digest.hexfinal(io).should eq expected_checksum
+  end
+
+  it "raises an error if the file does not exist" do
+    expect_raises File::NotFoundError do
+      CheckSum::Digest.new(CheckSum::Algorithm::MD5).hexfinal("nonexistentfile")
     end
   end
 end

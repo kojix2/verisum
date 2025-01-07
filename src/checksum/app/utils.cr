@@ -15,7 +15,6 @@ module CheckSum
       def calculate_checksum(filename : String, algorithm : Algorithm) : FileRecord
         d = Digest.new(algorithm)
         s = d.hexfinal(filename == "-" ? STDIN : filename)
-        d.reset
         FileRecord.new(s, Path[filename])
       end
 

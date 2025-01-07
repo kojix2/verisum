@@ -17,13 +17,13 @@ module CheckSum
 
     def hexfinal(filename : String | Path) : String
       @digest.file(filename).hexfinal
+    ensure
+      @digest.reset
     end
 
     def hexfinal(io : IO) : String
       @digest.update(io).hexfinal
-    end
-
-    def reset : Nil
+    ensure
       @digest.reset
     end
   end

@@ -104,8 +104,6 @@ module CheckSum
             actual_hash_value = digest.hexfinal(filepath)
           rescue e
             error = e
-          ensure
-            digest.reset
           end
 
           dispatch(result, filepath, index, expected_hash_value, actual_hash_value, error)
