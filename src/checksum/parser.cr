@@ -128,6 +128,7 @@ module CheckSum
       @opt.parse(argv)
       if argv.empty? && (@option.action == Action::Compute || @option.action == Action::Check)
         help_message(stderr)
+        stderr << "\n\n"
         raise NoFileSpecifiedError.new
       end
       @option.filenames = argv
