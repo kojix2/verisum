@@ -12,6 +12,21 @@ module CheckSum
     SHA1
     SHA256
     SHA512
+
+    def create_digest
+      case self
+      when MD5
+        ::Digest::MD5.new
+      when SHA1
+        ::Digest::SHA1.new
+      when SHA256
+        ::Digest::SHA256.new
+      when SHA512
+        ::Digest::SHA512.new
+      else # This should never happen
+        raise UnknownAlgorithmError.new("Unknown algorithm: #{self}")
+      end
+    end
   end
 
   struct Option
