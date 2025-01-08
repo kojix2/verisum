@@ -124,7 +124,7 @@ module CheckSum
         elsif expected_hash_value != actual_hash_value
           :mismatch
         else
-          :success
+          :pass
         end
       end
 
@@ -132,8 +132,8 @@ module CheckSum
         case type
         when :error
           result.error += 1
-        when :success
-          result.success += 1
+        when :pass
+          result.pass += 1
         when :mismatch
           result.mismatch += 1
         else
@@ -146,7 +146,7 @@ module CheckSum
         case type
         when :error
           @exit_code = EXIT_FAILURE
-        when :success
+        when :pass
           @exit_code # nothing to do
         when :mismatch
           @exit_code = EXIT_FAILURE
@@ -159,7 +159,7 @@ module CheckSum
         case type
         when :error
           @clear_flag = false
-        when :success
+        when :pass
           @clear_flag = true
         when :mismatch
           @clear_flag = false
@@ -179,7 +179,7 @@ module CheckSum
         case type
         when :error
           print_error_message(filepath, index, total, error.not_nil!)
-        when :success
+        when :pass
           print_ok_message(filepath, index, total)
         when :mismatch
           print_mismatch_message(filepath, index, total, expected_hash_value, actual_hash_value)

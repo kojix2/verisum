@@ -2,7 +2,7 @@ require "spec"
 require "../../src/checksum/app/checker"
 
 NUM_FILES       = 5
-EXPECTED_RESULT = CheckSum::App::CheckResult.new(total: 5, success: 3, mismatch: 1, error: 1)
+EXPECTED_RESULT = CheckSum::App::CheckResult.new(total: 5, pass: 3, mismatch: 1, error: 1)
 
 describe CheckSum::App::Checker do
   describe "#parse_checksum_file" do
@@ -152,11 +152,11 @@ describe CheckSum::App::Checker do
     it "prints result summary correctly" do
       checker = CheckSum::App::Checker.new
       checker.stdout = IO::Memory.new
-      result = CheckSum::App::CheckResult.new(total: 5, success: 4, mismatch: 1, error: 0)
+      result = CheckSum::App::CheckResult.new(total: 5, pass: 4, mismatch: 1, error: 0)
       elapsed_time = Time::Span.new(nanoseconds: 1234567890)
       checker.print_result(result, elapsed_time)
       output = checker.stdout.to_s
-      output.should contain "4 successes".colorize(:green).to_s
+      output.should contain "4 passes".colorize(:green).to_s
       output.should contain "1 mismatch".colorize(:red).to_s
       output.should_not contain "1 mismatches".colorize(:red).to_s
       output.should contain "0 errors"
