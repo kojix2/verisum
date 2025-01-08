@@ -20,7 +20,7 @@ jobs:
       - uses: crystal-lang/install-crystal@v1
         with:
           crystal: latest
-          shards: latest
+          shards: true
       - name: Install dependencies
         run: shards install --without-development --release
       - name: Build executable

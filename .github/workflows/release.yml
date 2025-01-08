@@ -22,7 +22,7 @@ jobs:
         uses: crystal-lang/install-crystal@v1
         with:
           crystal: latest
-          shards: latest
+          shards: true
 
       - name: Run Linux Build
         if: matrix.os == 'ubuntu'
