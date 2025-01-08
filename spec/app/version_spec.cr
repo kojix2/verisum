@@ -1,4 +1,5 @@
-require "../spec_helper"
+require "spec"
+require "../../src/checksum/app/version"
 
 describe CheckSum::App do
   describe CheckSum::Action::Version do

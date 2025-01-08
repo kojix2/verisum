@@ -1,4 +1,5 @@
-require "./spec_helper"
+require "spec"
+require "../src/checksum/file_record"
 
 describe CheckSum::FileRecord do
   it "can be created with a checksum and file path" do

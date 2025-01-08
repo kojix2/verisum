@@ -1,4 +1,5 @@
-require "../spec_helper"
+require "spec"
+require "../../src/checksum/app/checker"
 
 NUM_FILES       = 5
 EXPECTED_RESULT = CheckSum::App::CheckResult.new(total: 5, success: 3, mismatch: 1, error: 1)

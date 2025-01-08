@@ -1,3 +1,6 @@
+require "./algorithm"
+require "./exception"
+
 module CheckSum
   # Define a FileRecord structure to store the checksum and file path
   struct FileRecord

@@ -1,4 +1,5 @@
-require "./spec_helper"
+require "spec"
+require "../src/checksum/app"
 
 describe CheckSum::App do
   describe "Exit code for normal termination" do

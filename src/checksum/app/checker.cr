@@ -1,4 +1,10 @@
 require "../redirect"
+require "../option"
+require "../file_record"
+require "../digest"
+require "../ioctl"
+require "./exit_code"
+require "./check_result"
 require "./utils"
 
 module CheckSum

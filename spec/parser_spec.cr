@@ -1,4 +1,5 @@
-require "./spec_helper"
+require "spec"
+require "../src/checksum/parser"
 
 describe CheckSum::Parser do
   it "raises an error when no files are specified" do

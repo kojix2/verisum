@@ -1,3 +1,5 @@
+require "../app"
+
 module CheckSum
   class App
     def print_help(io : IO)

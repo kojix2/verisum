@@ -1,4 +1,5 @@
-require "./spec_helper"
+require "spec"
+require "../src/checksum/digest"
 
 describe CheckSum::Digest do
   it "creates an MD5 digest instance" do

@@ -1,4 +1,5 @@
-require "./spec_helper"
+require "spec"
+require "../src/checksum"
 
 describe CheckSum do
   it "has a version number" do

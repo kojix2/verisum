@@ -25,6 +25,7 @@ require "colorize"
 require "./option"
 require "./exception"
 require "./redirect"
+require "./version"
 
 module CheckSum
   class Parser

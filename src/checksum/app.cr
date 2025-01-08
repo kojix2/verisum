@@ -17,9 +17,6 @@ module CheckSum
     getter parser : Parser
     getter option : Option
 
-    EXIT_SUCCESS = 0
-    EXIT_FAILURE = 1
-
     def self.run(argv = ARGV) : Int32
       new.run(argv)
     end
