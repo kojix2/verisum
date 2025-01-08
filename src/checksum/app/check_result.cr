@@ -1,3 +1,5 @@
+require "colorize"
+
 module CheckSum
   class App
     class CheckResult

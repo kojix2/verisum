@@ -51,15 +51,20 @@ describe CheckSum::App::CheckResult do
   end
 
   it "formats to string with color" do
+    v = Colorize.enabled?
+    Colorize.enabled = true
     result = CheckSum::App::CheckResult.new(10, 5, 3, 2)
     r = result.to_s
     r.should contain("5 passes".colorize(:green).to_s)
     r.should contain("3 mismatches".colorize(:red).to_s)
     r.should contain("2 errors".colorize(:magenta).to_s)
+    Colorize.enabled = v
   end
 
   it "formats to string without color" do
     result = CheckSum::App::CheckResult.new(0, 0, 0, 0)
+    v = Colorize.enabled?
+    Colorize.enabled = true
     r = result.to_s
     r.should contain("0 files")
     r.should contain("0 passes")
@@ -68,6 +73,7 @@ describe CheckSum::App::CheckResult do
     r.should_not contain("0 passes".colorize(:green).to_s)
     r.should_not contain("0 mismatches".colorize(:red).to_s)
     r.should_not contain("0 errors".colorize(:magenta).to_s)
+    Colorize.enabled = v
   end
 
   it "compares equality" do
