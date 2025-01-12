@@ -14,13 +14,28 @@ module CheckSum
 
       private def format_time_span(span : Time::Span)
         total_seconds = span.total_seconds
-        if total_seconds < 60
-          return "#{total_seconds.round(2)} seconds"
-        end
 
-        minutes = span.total_minutes
-        seconds = span.seconds
-        "#{"%d" % minutes.floor}:#{seconds < 10 ? "0" : ""}#{seconds} minutes"
+        if total_seconds < 10
+          sprintf "%.2fs", total_seconds
+        elsif total_seconds < 60
+          sprintf "%.1fs", total_seconds
+        elsif total_seconds < 3600
+          minutes = span.total_minutes.to_i
+          seconds = span.seconds.to_i
+          String.build do |io|
+            io << "#{minutes}m"
+            io << " #{seconds}s" if seconds > 0
+          end
+        else
+          hours = span.total_hours.to_i
+          minutes = (span.minutes % 60).to_i
+          seconds = span.seconds.to_i
+          String.build do |io|
+            io << "#{hours}h" if hours > 0
+            io << " #{minutes}m" if minutes > 0
+            io << " #{seconds}s" if seconds > 0
+          end
+        end
       end
 
       def remove_bom(line : String) : String

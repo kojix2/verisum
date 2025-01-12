@@ -160,7 +160,7 @@ describe CheckSum::App::Checker do
       output.should contain "1 mismatch".colorize(:red).to_s
       output.should_not contain "1 mismatches".colorize(:red).to_s
       output.should contain "0 errors"
-      output.should contain "(1.23 seconds)"
+      output.should contain "(1.23s)"
     end
   end
 end
