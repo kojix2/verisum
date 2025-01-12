@@ -44,6 +44,12 @@ module CheckSum
         calculate_checksum(filename, algorithm)
       end
 
+      def calculate_checksum(filename : String, algorithm : Algorithm) : FileRecord
+        d = Digest.new(algorithm)
+        s = d.hexfinal(filename == "-" ? STDIN : filename)
+        FileRecord.new(s, Path[filename])
+      end
+
       private def select_algorithm : Algorithm
         option.algorithm || raise NoAlgorithmError.new
       end

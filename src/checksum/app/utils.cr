@@ -12,12 +12,6 @@ module CheckSum
         option.absolute_path? ? File.expand_path(filename) : filename
       end
 
-      def calculate_checksum(filename : String, algorithm : Algorithm) : FileRecord
-        d = Digest.new(algorithm)
-        s = d.hexfinal(filename == "-" ? STDIN : filename)
-        FileRecord.new(s, Path[filename])
-      end
-
       private def format_time_span(span : Time::Span)
         total_seconds = span.total_seconds
         if total_seconds < 60
