@@ -12,7 +12,6 @@ end
 describe CheckSum::App::Utils do
   utils = TestUtilsClass.new
 
-  # 基本動作の確認
   it "formats time span less than a minute" do
     span = Time::Span.new(seconds: 45) # 45 seconds
     utils.format_time_span2(span).should eq "45.0s"
@@ -28,7 +27,6 @@ describe CheckSum::App::Utils do
     utils.format_time_span2(span).should eq "16h 40m 45s"
   end
 
-  # エッジケースの追加テスト
   it "formats zero seconds correctly" do
     span = Time::Span.new(seconds: 0)
     utils.format_time_span2(span).should eq "0.00s"
@@ -69,12 +67,35 @@ describe CheckSum::App::Utils do
     utils.format_time_span2(span).should eq "2h"
   end
 
-  # BOMの既存テスト
   it "removes bom from string" do
     utils.remove_bom("\xEF\xBB\xBFHello").should eq "Hello"
   end
 
   it "removes bom from string with no bom" do
+    utils.remove_bom("Hello").should eq "Hello"
+  end
+
+  it "removes bom from string with no bom" do
+    utils.remove_bom("Hello").should eq "Hello"
+  end
+
+  it "removes UTF-16 (BE) BOM from string" do
+    utils.remove_bom("\xFE\xFFHello").should eq "Hello"
+  end
+
+  it "removes UTF-16 (LE) BOM from string" do
+    utils.remove_bom("\xFF\xFEHello").should eq "Hello"
+  end
+
+  it "removes UTF-32 (BE) BOM from string" do
+    utils.remove_bom("\x00\x00\xFE\xFFHello").should eq "Hello"
+  end
+
+  it "removes UTF-32 (LE) BOM from string" do
+    utils.remove_bom("\xFF\xFE\x00\x00Hello").should eq "Hello"
+  end
+
+  it "does not remove BOM if not present" do
     utils.remove_bom("Hello").should eq "Hello"
   end
 end

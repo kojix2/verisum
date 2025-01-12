@@ -39,7 +39,7 @@ module CheckSum
       end
 
       def remove_bom(line : String) : String
-        b = {"\xEF\xBB\xBF", "\xFE\xFF", "\xFF\xFE", "\x00\x00\xFE\xFF", "\xFF\xFE\x00\x00"}.find do |bom|
+        b = {"\xEF\xBB\xBF", "\xFE\xFF", "\xFF\xFE\x00\x00", "\xFF\xFE", "\x00\x00\xFE\xFF"}.find do |bom|
           line.starts_with?(bom)
         end
         b ? line[b.size..-1] : line
