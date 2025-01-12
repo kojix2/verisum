@@ -4,6 +4,5 @@ module CheckSum
     Check
     Version
     Help
-    None
   end
 end
