@@ -20,18 +20,18 @@ module CheckSum
         elsif total_seconds < 60
           sprintf "%.1fs", total_seconds
         elsif total_seconds < 3600
-          minutes = span.total_minutes.to_i
-          seconds = span.seconds.to_i
+          minutes = span.minutes
+          seconds = span.seconds
           String.build do |io|
             io << "#{minutes}m"
             io << " #{seconds}s" if seconds > 0
           end
         else
           hours = span.total_hours.to_i
-          minutes = (span.minutes % 60).to_i
-          seconds = span.seconds.to_i
+          minutes = span.minutes
+          seconds = span.seconds
           String.build do |io|
-            io << "#{hours}h" if hours > 0
+            io << "#{hours}h"
             io << " #{minutes}m" if minutes > 0
             io << " #{seconds}s" if seconds > 0
           end
