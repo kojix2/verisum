@@ -13,7 +13,7 @@ module CheckSum
 
       def to_h
         {total:    total,
-         pass:  pass,
+         pass:     pass,
          mismatch: mismatch,
          error:    error}
       end
