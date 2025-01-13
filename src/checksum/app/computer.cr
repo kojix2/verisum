@@ -19,16 +19,26 @@ module CheckSum
       end
 
       def run : Int32
-        elapsed_time = process_files
+        elapsed_time = measure_execution(option.verbose?) do
+          process_files
+        end
+
         print_summary(elapsed_time) if option.verbose?
         @exit_code
       end
 
-      private def process_files : Time::Span
-        Time.measure do
-          option.filenames.each do |filename|
-            puts calculate_file_checksum(filename)
-          end
+      private def measure_execution(measure : Bool, &block : -> Nil) : Time::Span
+        if measure
+          Time.measure { yield }
+        else
+          yield
+          Time::Span.new(seconds: 0)
+        end
+      end
+
+      private def process_files : Nil
+        option.filenames.each do |filename|
+          puts calculate_file_checksum(filename)
         end
       end
 
