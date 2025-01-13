@@ -25,6 +25,7 @@ module CheckSum
         @exit_code = EXIT_SUCCESS
         @clear_flag = false
         @screen_width = nil
+        @filenames = option.filenames
       end
 
       def screen_width
@@ -32,7 +33,7 @@ module CheckSum
       end
 
       def run : Int32
-        option.filenames.each do |filename|
+        @filenames.each do |filename|
           run_check_file(filename)
         end
         @exit_code

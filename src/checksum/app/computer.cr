@@ -16,6 +16,7 @@ module CheckSum
 
       def initialize(@option : Option, @stdout : IO = STDOUT, @stderr : IO = STDERR)
         @exit_code = EXIT_SUCCESS
+        @filenames = option.filenames
       end
 
       def run : Int32
@@ -37,7 +38,7 @@ module CheckSum
       end
 
       private def process_files : Nil
-        option.filenames.each do |filename|
+        @filenames.each do |filename|
           puts calculate_file_checksum(filename)
         end
       end
