@@ -6,7 +6,7 @@
 
 ![screenshot](https://github.com/user-attachments/assets/453701b9-19ec-4409-99f2-4e0fb638df4c)
 
-Confirmation of the MD5 checksums for 100,000 images from "[たっぷり素材PIXTA](https://www.sourcenext.com/product/pixta/)"
+Verifying MD5 of 100,000 images from "[たっぷり素材PIXTA](https://www.sourcenext.com/product/pixta/)"
 
 ## Installation
 
@@ -16,9 +16,9 @@ To compile from source code, follow the steps below:
 
 ```sh
 git clone https://github.com/kojix2/checksum.cr
-cd checksum
+cd checksum.cr
 shards build --release
-cp bin/checksum /usr/local/bin/
+sudo cp bin/checksum /usr/local/bin/
 ```
 
 Homebrew:
@@ -29,11 +29,6 @@ brew install kojix2/brew/checksum
 
 ## Usage
 
-To verify checksums from a file, use the following command:
-
-```sh
-checksum -c md5sum.txt
-```
 
 ```
   Options;
@@ -47,6 +42,8 @@ checksum -c md5sum.txt
     -V, --version                    Show version
 ```
 
+### Verification
+
 To verify the checksums with:
 
 ```sh
@@ -59,6 +56,8 @@ Example output:
 4 files in md5.txt
 4 files, 4 success, 0 mismatch, 0 errors  (0.0 seconds)
 ```
+
+### Calculation
 
 To generate checksums and save them to a file, use:
 
@@ -75,7 +74,21 @@ cb9c37b1954a07579e044e33521c993d  shard.lock
 c680044745baa4b423450c9ecb8baebb  shard.yml
 ```
 
-This command is not meant for recursively scanning directories and creating files. Use tools like `find` or `fd`, sort with `sort` or `gsort`, and process with `xargs`.
+- The main purpose of this tool is “validation”.
+- Note that the effect of the -c option is the opposite of `md5sum`.
+- The “calculation” function is intended for use in situations where Unix commands such as md5sum cannot be used for some reason. 
+
+- This command is not meant for recursively scanning directories and creating files. Use tools like `find` or `fd`, sort with `sort` or `gsort`, and process with `xargs`.
+
+```sh
+find . -type f | sort | xargs md5sum
+find . -type f | sort | xargs checksum -c -a md5
+```
+
+```sh
+fd -t f | sort | xargs md5sum
+fd -t f | sort | xargs checksum -c -a md5
+```
 
 ## Development
 
