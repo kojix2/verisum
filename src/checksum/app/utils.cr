@@ -12,6 +12,15 @@ module CheckSum
         option.absolute_path? ? File.expand_path(filename) : filename
       end
 
+      private def measure_execution(measure : Bool, &block : -> Nil) : Time::Span
+        if measure
+          Time.measure { yield }
+        else
+          yield
+          Time::Span.new(seconds: 0)
+        end
+      end
+
       private def format_time_span(span : Time::Span)
         total_seconds = span.total_seconds
 
