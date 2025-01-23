@@ -59,10 +59,20 @@ Example output:
 
 ### Calculation
 
-To generate checksums and save them to a file, use:
+We recommend using standard Unix commands for calculations, 
+but if standard Unix commands are not available, 
+you can also use this tool for calculations.
+
+**Note that the effect of the `-c` option is the opposite of `md5sum`.**
 
 ```sh
 checksum -c -a md5 * | tee md5.txt
+```
+
+Sort the file list before calculating the checksums:
+
+```sh
+find . -type f | sort | xargs checksum -c -a md5 | tee md5.txt
 ```
 
 Example output:
@@ -72,22 +82,6 @@ Example output:
 3be217b6d3ac7c38e1805b01b1be0178  README.md
 cb9c37b1954a07579e044e33521c993d  shard.lock
 c680044745baa4b423450c9ecb8baebb  shard.yml
-```
-
-- The main purpose of this tool is “validation”.
-- Note that the effect of the -c option is the opposite of `md5sum`.
-- The “calculation” function is intended for use in situations where Unix commands such as md5sum cannot be used for some reason. 
-
-- This command is not meant for recursively scanning directories and creating files. Use tools like `find` or `fd`, sort with `sort` or `gsort`, and process with `xargs`.
-
-```sh
-find . -type f | sort | xargs md5sum
-find . -type f | sort | xargs checksum -c -a md5
-```
-
-```sh
-fd -t f | sort | xargs md5sum
-fd -t f | sort | xargs checksum -c -a md5
 ```
 
 ## Development
