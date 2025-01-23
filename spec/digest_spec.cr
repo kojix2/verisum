@@ -1,29 +1,29 @@
 require "spec"
-require "../src/checksum/digest"
+require "../src/verisum/digest"
 
-describe CheckSum::Digest do
+describe Verisum::Digest do
   it "creates an MD5 digest instance" do
-    digest = CheckSum::Digest.new(CheckSum::Algorithm::MD5)
+    digest = Verisum::Digest.new(Verisum::Algorithm::MD5)
     digest.inspect.should match(/Digest::MD5/)
-    digest.algorithm.should eq CheckSum::Algorithm::MD5
+    digest.algorithm.should eq Verisum::Algorithm::MD5
   end
 
   it "creates a SHA1 digest instance" do
-    digest = CheckSum::Digest.new(CheckSum::Algorithm::SHA1)
+    digest = Verisum::Digest.new(Verisum::Algorithm::SHA1)
     digest.inspect.should match(/Digest::SHA1/)
-    digest.algorithm.should eq CheckSum::Algorithm::SHA1
+    digest.algorithm.should eq Verisum::Algorithm::SHA1
   end
 
   it "creates a SHA256 digest instance" do
-    digest = CheckSum::Digest.new(CheckSum::Algorithm::SHA256)
+    digest = Verisum::Digest.new(Verisum::Algorithm::SHA256)
     digest.inspect.should match(/Digest::SHA256/)
-    digest.algorithm.should eq CheckSum::Algorithm::SHA256
+    digest.algorithm.should eq Verisum::Algorithm::SHA256
   end
 
   it "creates a SHA512 digest instance" do
-    digest = CheckSum::Digest.new(CheckSum::Algorithm::SHA512)
+    digest = Verisum::Digest.new(Verisum::Algorithm::SHA512)
     digest.inspect.should match(/Digest::SHA512/)
-    digest.algorithm.should eq CheckSum::Algorithm::SHA512
+    digest.algorithm.should eq Verisum::Algorithm::SHA512
   end
 
   it "computes the correct MD5 checksum of a file" do
@@ -40,7 +40,7 @@ describe CheckSum::Digest do
     rescue File::NotFoundError
       # md5sum is not available
     end
-    digest = CheckSum::Digest.new(CheckSum::Algorithm::MD5)
+    digest = Verisum::Digest.new(Verisum::Algorithm::MD5)
     digest.hexfinal(temp_file.path).should eq expected_checksum
     # no need to reset the digest
     digest.hexfinal(temp_file.path).should eq expected_checksum
@@ -52,7 +52,7 @@ describe CheckSum::Digest do
     io = IO::Memory.new
     io.print("Test data for checksumming")
     io.rewind
-    digest = CheckSum::Digest.new(CheckSum::Algorithm::MD5)
+    digest = Verisum::Digest.new(Verisum::Algorithm::MD5)
     digest.hexfinal(io).should eq expected_checksum
     # no need to reset the digest
     io.rewind
@@ -73,7 +73,7 @@ describe CheckSum::Digest do
     rescue File::NotFoundError
       # sha1sum is not available
     end
-    digest = CheckSum::Digest.new(CheckSum::Algorithm::SHA1)
+    digest = Verisum::Digest.new(Verisum::Algorithm::SHA1)
     digest.hexfinal(temp_file.path).should eq expected_checksum
     # no need to reset the digest
     digest.hexfinal(temp_file.path).should eq expected_checksum
@@ -85,7 +85,7 @@ describe CheckSum::Digest do
     io = IO::Memory.new
     io.print("Test data for checksumming")
     io.rewind
-    digest = CheckSum::Digest.new(CheckSum::Algorithm::SHA1)
+    digest = Verisum::Digest.new(Verisum::Algorithm::SHA1)
     digest.hexfinal(io).should eq expected_checksum
     # no need to reset the digest
     io.rewind
@@ -106,7 +106,7 @@ describe CheckSum::Digest do
     rescue File::NotFoundError
       # sha256sum is not available
     end
-    digest = CheckSum::Digest.new(CheckSum::Algorithm::SHA256)
+    digest = Verisum::Digest.new(Verisum::Algorithm::SHA256)
     digest.hexfinal(temp_file.path).should eq expected_checksum
     # no need to reset the digest
     digest.hexfinal(temp_file.path).should eq expected_checksum
@@ -118,7 +118,7 @@ describe CheckSum::Digest do
     io = IO::Memory.new
     io.print("Test data for checksumming")
     io.rewind
-    digest = CheckSum::Digest.new(CheckSum::Algorithm::SHA256)
+    digest = Verisum::Digest.new(Verisum::Algorithm::SHA256)
     digest.hexfinal(io).should eq expected_checksum
     # no need to reset the digest
     io.rewind
@@ -139,7 +139,7 @@ describe CheckSum::Digest do
     rescue File::NotFoundError
       # sha512sum is not available
     end
-    digest = CheckSum::Digest.new(CheckSum::Algorithm::SHA512)
+    digest = Verisum::Digest.new(Verisum::Algorithm::SHA512)
     digest.hexfinal(temp_file.path).should eq expected_checksum
     # no need to reset the digest
     digest.hexfinal(temp_file.path).should eq expected_checksum
@@ -151,7 +151,7 @@ describe CheckSum::Digest do
     io = IO::Memory.new
     io.print("Test data for checksumming")
     io.rewind
-    digest = CheckSum::Digest.new(CheckSum::Algorithm::SHA512)
+    digest = Verisum::Digest.new(Verisum::Algorithm::SHA512)
     digest.hexfinal(io).should eq expected_checksum
     # no need to reset the digest
     io.rewind
@@ -160,7 +160,7 @@ describe CheckSum::Digest do
 
   it "raises an error if the file does not exist" do
     expect_raises File::NotFoundError do
-      CheckSum::Digest.new(CheckSum::Algorithm::MD5).hexfinal("nonexistentfile")
+      Verisum::Digest.new(Verisum::Algorithm::MD5).hexfinal("nonexistentfile")
     end
   end
 end

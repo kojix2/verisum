@@ -1,4 +1,4 @@
-module CheckSum
+module Verisum
   enum Action
     Compute
     Check

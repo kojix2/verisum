@@ -1,3 +1,3 @@
-require "./checksum"
+require "./verisum"
 
-exit(CheckSum::App.run)
+exit(Verisum::App.run)

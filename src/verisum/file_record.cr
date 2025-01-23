@@ -1,7 +1,7 @@
 require "./algorithm"
 require "./exception"
 
-module CheckSum
+module Verisum
   # Define a FileRecord structure to store the checksum and file path
   struct FileRecord
     getter checksum : String

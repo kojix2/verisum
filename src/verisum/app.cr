@@ -9,7 +9,7 @@ require "./redirect"
 require "./app/*"
 require "./ioctl"
 
-module CheckSum
+module Verisum
   # The main application class.
   class App
     include Redirect
@@ -26,7 +26,7 @@ module CheckSum
       @parser = Parser.new(@option)
     end
 
-    # Runs the checksum application with the given arguments.
+    # Runs the verisum application with the given arguments.
     #
     # Returns the exit code.
     def run(argv = ARGV) : Int32
@@ -44,8 +44,8 @@ module CheckSum
         print_help(stderr); EXIT_FAILURE
       end
     rescue ex
-      stderr.puts "[checksum] ERROR: #{ex.class} #{ex.message}".colorize(:red).bold
-      stderr.puts "\n#{ex.backtrace.join("\n")}" if CheckSumError.debug?
+      stderr.puts "[verisum] ERROR: #{ex.class} #{ex.message}".colorize(:red).bold
+      stderr.puts "\n#{ex.backtrace.join("\n")}" if VerisumError.debug?
       EXIT_FAILURE
     end
   end

@@ -1,8 +1,8 @@
-# checksum
+# verisum
 
-[![test](https://github.com/kojix2/checksum.cr/actions/workflows/test.yml/badge.svg)](https://github.com/kojix2/checksum.cr/actions/workflows/test.yml)
+[![test](https://github.com/kojix2/verisum/actions/workflows/test.yml/badge.svg)](https://github.com/kojix2/verisum/actions/workflows/test.yml)
 
-`checksum` makes the output of `md5sum -c` or `sha256sum -c` prettier.
+`verisum` makes the output of `md5sum -c` or `sha256sum -c` prettier.
 
 ![screenshot](https://github.com/user-attachments/assets/453701b9-19ec-4409-99f2-4e0fb638df4c)
 
@@ -10,21 +10,21 @@ Verifying MD5 of 100,000 images from "[たっぷり素材PIXTA](https://www.sour
 
 ## Installation
 
-You can download pre-compiled binaries from [GitHub Release](https://github.com/kojix2/checksum.cr/releases).
+You can download pre-compiled binaries from [GitHub Release](https://github.com/kojix2/verisum.cr/releases).
 
 To compile from source code, follow the steps below:
 
 ```sh
-git clone https://github.com/kojix2/checksum.cr
-cd checksum.cr
+git clone https://github.com/kojix2/verisum
+cd verisum
 shards build --release
-sudo cp bin/checksum /usr/local/bin/
+sudo cp bin/verisum /usr/local/bin/
 ```
 
 Homebrew:
 
 ```
-brew install kojix2/brew/checksum
+brew install kojix2/brew/verisum
 ```
 
 ## Usage
@@ -47,7 +47,7 @@ brew install kojix2/brew/checksum
 To verify the checksums with:
 
 ```sh
-checksum md5.txt
+verisum md5.txt
 ```
 
 Example output:
@@ -66,13 +66,13 @@ you can also use this tool for calculations.
 **Note that the effect of the `-c` option is the opposite of `md5sum`.**
 
 ```sh
-checksum -c -a md5 * | tee md5.txt
+verisum -c -a md5 * | tee md5.txt
 ```
 
 Sort the file list before calculating the checksums:
 
 ```sh
-find . -type f | sort | xargs checksum -c -a md5 | tee md5.txt
+find . -type f | sort | xargs verisum -c -a md5 | tee md5.txt
 ```
 
 Example output:

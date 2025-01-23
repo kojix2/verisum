@@ -1,5 +1,5 @@
-module CheckSum
-  class CheckSumError < Exception
+module Verisum
+  class VerisumError < Exception
     class_property? debug : Bool = false
   end
 

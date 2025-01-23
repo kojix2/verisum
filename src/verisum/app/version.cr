@@ -1,9 +1,9 @@
 require "../app"
 
-module CheckSum
+module Verisum
   class App
     def print_version(io : IO)
-      io << "checksum " << VERSION << "\n"
+      io << "verisum " << VERSION << "\n"
     end
   end
 end

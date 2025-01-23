@@ -27,11 +27,11 @@ require "./exception"
 require "./redirect"
 require "./version"
 
-module CheckSum
+module Verisum
   class Parser
     include Redirect
 
-    class NoFileSpecifiedError < CheckSumError
+    class NoFileSpecifiedError < VerisumError
       def initialize
         super("No files specified. Please use '-' to specify standard input.")
       end
@@ -42,11 +42,11 @@ module CheckSum
       @opt.summary_width = 23
       @opt.banner = <<-BANNER
 
-        Program: checksum
+        Program: verisum
         Version: #{VERSION}
         Source:  #{SOURCE}
 
-        Usage: checksum [options] [files ...]
+        Usage: verisum [options] [files ...]
 
         Arguments:
           [files...] File(s). Use a dash ('-') to read from standard input.
@@ -102,7 +102,7 @@ module CheckSum
       end
 
       @opt.on("-D", "--debug", "Print a backtrace on error") do
-        CheckSumError.debug = true
+        VerisumError.debug = true
       end
 
       @opt.on("-h", "--help", "Show this message") do

@@ -1,13 +1,13 @@
 require "spec"
-require "../../src/checksum/app/version"
+require "../../src/verisum/app/version"
 
-describe CheckSum::App do
-  describe CheckSum::Action::Version do
+describe Verisum::App do
+  describe Verisum::Action::Version do
     it "outputs the application version" do
-      app = CheckSum::App.new
+      app = Verisum::App.new
       io = IO::Memory.new
       app.print_version io
-      io.to_s.should eq "checksum #{CheckSum::VERSION}\n"
+      io.to_s.should eq "verisum #{Verisum::VERSION}\n"
     end
   end
 end

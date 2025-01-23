@@ -1,7 +1,7 @@
 require "./action"
 require "./algorithm"
 
-module CheckSum
+module Verisum
   struct Option
     property action : Action = Action::Check
     property algorithm : Algorithm? = nil

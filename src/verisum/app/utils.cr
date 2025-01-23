@@ -1,10 +1,10 @@
-module CheckSum
+module Verisum
   class App
     module Utils
       private def resolve_filepath(filename)
         if filename == "-"
           if File.exists?("-")
-            stderr.puts "[checksum] File “-” exists. Read #{File.expand_path(filename)} instead of standard input"
+            stderr.puts "[verisum] File “-” exists. Read #{File.expand_path(filename)} instead of standard input"
           else # stdin
             return "-"
           end

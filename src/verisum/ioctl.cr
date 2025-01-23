@@ -12,7 +12,7 @@
   end
 {% end %}
 
-module CheckSum
+module Verisum
   # Returns the width of the terminal screen.
   # It first checks the `COLUMNS` environment variable.
   # If not set, it defaults to `80`.

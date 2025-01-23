@@ -5,7 +5,7 @@ require "digest/sha512"
 
 require "./option"
 
-module CheckSum
+module Verisum
   class Digest
     @digest : (::Digest::MD5 | ::Digest::SHA1 | ::Digest::SHA256 | ::Digest::SHA512)
 

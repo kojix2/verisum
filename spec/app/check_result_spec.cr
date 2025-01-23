@@ -1,9 +1,9 @@
 require "spec"
-require "../../src/checksum/app/check_result"
+require "../../src/verisum/app/check_result"
 
-describe CheckSum::App::CheckResult do
+describe Verisum::App::CheckResult do
   it "initializes with default values" do
-    result = CheckSum::App::CheckResult.new
+    result = Verisum::App::CheckResult.new
     result.total.should eq 0
     result.pass.should eq 0
     result.mismatch.should eq 0
@@ -11,7 +11,7 @@ describe CheckSum::App::CheckResult do
   end
 
   it "initializes with given values" do
-    result = CheckSum::App::CheckResult.new(10, 5, 3, 2)
+    result = Verisum::App::CheckResult.new(10, 5, 3, 2)
     result.total.should eq 10
     result.pass.should eq 5
     result.mismatch.should eq 3
@@ -19,12 +19,12 @@ describe CheckSum::App::CheckResult do
   end
 
   it "converts to hash" do
-    result = CheckSum::App::CheckResult.new(10, 5, 3, 2)
+    result = Verisum::App::CheckResult.new(10, 5, 3, 2)
     result.to_h.should eq({total: 10, pass: 5, mismatch: 3, error: 2})
   end
 
   it "formats to string" do
-    result = CheckSum::App::CheckResult.new(10, 5, 3, 2)
+    result = Verisum::App::CheckResult.new(10, 5, 3, 2)
     r = result.to_s
     r.should contain("10 files")
     r.should contain("5 passes")
@@ -33,7 +33,7 @@ describe CheckSum::App::CheckResult do
   end
 
   it "formats to string with singular" do
-    result = CheckSum::App::CheckResult.new(1, 1, 1, 1)
+    result = Verisum::App::CheckResult.new(1, 1, 1, 1)
     r = result.to_s
     r.should contain("1 file")
     r.should contain("1 pass")
@@ -42,7 +42,7 @@ describe CheckSum::App::CheckResult do
   end
 
   it "formats to string with zero" do
-    result = CheckSum::App::CheckResult.new(0, 0, 0, 0)
+    result = Verisum::App::CheckResult.new(0, 0, 0, 0)
     r = result.to_s
     r.should contain("0 files")
     r.should contain("0 passes")
@@ -53,7 +53,7 @@ describe CheckSum::App::CheckResult do
   it "formats to string with color" do
     v = Colorize.enabled?
     Colorize.enabled = true
-    result = CheckSum::App::CheckResult.new(10, 5, 3, 2)
+    result = Verisum::App::CheckResult.new(10, 5, 3, 2)
     r = result.to_s
     r.should contain("5 passes".colorize(:green).to_s)
     r.should contain("3 mismatches".colorize(:red).to_s)
@@ -62,7 +62,7 @@ describe CheckSum::App::CheckResult do
   end
 
   it "formats to string without color" do
-    result = CheckSum::App::CheckResult.new(0, 0, 0, 0)
+    result = Verisum::App::CheckResult.new(0, 0, 0, 0)
     v = Colorize.enabled?
     Colorize.enabled = true
     r = result.to_s
@@ -77,9 +77,9 @@ describe CheckSum::App::CheckResult do
   end
 
   it "compares equality" do
-    result1 = CheckSum::App::CheckResult.new(10, 5, 3, 2)
-    result2 = CheckSum::App::CheckResult.new(10, 5, 3, 2)
-    result3 = CheckSum::App::CheckResult.new(1, 1, 1, 1)
+    result1 = Verisum::App::CheckResult.new(10, 5, 3, 2)
+    result2 = Verisum::App::CheckResult.new(10, 5, 3, 2)
+    result3 = Verisum::App::CheckResult.new(1, 1, 1, 1)
     result1.should eq result2
     result1.should_not eq result3
   end

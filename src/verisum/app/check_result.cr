@@ -1,6 +1,6 @@
 require "colorize"
 
-module CheckSum
+module Verisum
   class App
     class CheckResult
       property total : UInt64 = 0

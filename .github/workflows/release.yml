@@ -32,18 +32,18 @@ jobs:
           docker run -d --name alpine -v $(pwd):/workspace -w /workspace crystallang/crystal:latest-alpine tail -f /dev/null
           docker exec alpine shards install --without-development --release --static
           docker exec alpine shards build --release --static
-          docker exec alpine chmod +x bin/checksum
-          docker exec alpine gzip bin/checksum
-          docker exec alpine mv bin/checksum.gz bin/checksum-linux.gz
+          docker exec alpine chmod +x bin/verisum
+          docker exec alpine gzip bin/verisum
+          docker exec alpine mv bin/verisum.gz bin/verisum-linux.gz
 
       - name: Run Mac Build x64
         if: matrix.os == 'macos'
         run: |
           shards install --without-development --release
           shards build --release
-          chmod +x bin/checksum
-          gzip bin/checksum
-          mv bin/checksum.gz bin/checksum-macos.gz
+          chmod +x bin/verisum
+          gzip bin/verisum
+          mv bin/verisum.gz bin/verisum-macos.gz
 
       - name: Run Windows Build x64
         if: matrix.os == 'windows'
@@ -51,13 +51,13 @@ jobs:
           shards install --without-development --release
           shards build --release --static
           Set-ExecutionPolicy RemoteSigned -Scope Process
-          Compress-Archive -Path bin/checksum.exe -DestinationPath bin/checksum-windows.zip
+          Compress-Archive -Path bin/verisum.exe -DestinationPath bin/verisum-windows.zip
 
       - name: Upload Release Asset
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            bin/checksum-linux.gz
-            bin/checksum-macos.gz
-            bin/checksum-windows.zip
+            bin/verisum-linux.gz
+            bin/verisum-macos.gz
+            bin/verisum-windows.zip
             LICENSE.txt

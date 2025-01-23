@@ -1,12 +1,12 @@
 require "spec"
-require "../src/checksum/version"
+require "../src/verisum/version"
 
-describe CheckSum do
+describe Verisum do
   it "has a VERSION constant" do
-    CheckSum::VERSION.should match(/\d+\.\d+\.\d+/)
+    Verisum::VERSION.should match(/\d+\.\d+\.\d+/)
   end
 
   it "has a SOURCE constant" do
-    CheckSum::SOURCE.should match(/^https:\/\/.*\/checksum/)
+    Verisum::SOURCE.should match(/^https:\/\/.*\/verisum/)
   end
 end

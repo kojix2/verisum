@@ -7,7 +7,7 @@ require "./exit_code"
 require "./check_result"
 require "./utils"
 
-module CheckSum
+module Verisum
   class App
     class Checker
       include Redirect
@@ -29,7 +29,7 @@ module CheckSum
       end
 
       def screen_width
-        @screen_width || CheckSum.screen_width
+        @screen_width || Verisum.screen_width
       end
 
       def run : Int32
@@ -49,7 +49,7 @@ module CheckSum
         puts "#{records.size} files in #{(filename == "-" ? "standard input" : filename).colorize.bold}"
 
         if option.verbose?
-          puts "[checksum] Guessed algorithm: #{algorithm}".colorize(:dark_gray)
+          puts "[verisum] Guessed algorithm: #{algorithm}".colorize(:dark_gray)
         end
 
         results = nil

@@ -1,6 +1,6 @@
 require "./exception"
 
-module CheckSum
+module Verisum
   enum Algorithm
     MD5
     SHA1

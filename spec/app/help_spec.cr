@@ -1,11 +1,11 @@
 require "spec"
-require "../../src/checksum/app/help"
+require "../../src/verisum/app/help"
 
-describe CheckSum::App do
+describe Verisum::App do
   it "displays the help message" do
-    app = CheckSum::App.new
+    app = Verisum::App.new
     io = IO::Memory.new
     app.print_help io
-    io.to_s.should match /Usage: checksum \[options\] \[files ...\]/
+    io.to_s.should match /Usage: verisum \[options\] \[files ...\]/
   end
 end

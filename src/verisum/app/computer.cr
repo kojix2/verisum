@@ -2,7 +2,7 @@ require "../redirect"
 require "./file_names"
 require "./utils"
 
-module CheckSum
+module Verisum
   class App
     class Computer
       include Redirect
@@ -44,7 +44,7 @@ module CheckSum
       end
 
       private def print_time(elapsed_time) : Nil
-        stderr.puts "[checksum] (#{format_time_span(elapsed_time)})".colorize(:dark_gray)
+        stderr.puts "[verisum] (#{format_time_span(elapsed_time)})".colorize(:dark_gray)
       end
     end
   end

@@ -1,8 +1,8 @@
 require "spec"
-require "../src/checksum/redirect"
+require "../src/verisum/redirect"
 
 class TestObject
-  include CheckSum::Redirect
+  include Verisum::Redirect
 
   def public_print(*args)
     print(*args)
@@ -13,7 +13,7 @@ class TestObject
   end
 end
 
-describe CheckSum::Redirect do
+describe Verisum::Redirect do
   it "has a default stdout" do
     redirect = TestObject.new
     redirect.stdout.should eq(STDOUT)

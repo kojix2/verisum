@@ -1,15 +1,15 @@
 require "spec"
-require "../../src/checksum/app/utils"
+require "../../src/verisum/app/utils"
 
 class TestUtilsClass
-  include CheckSum::App::Utils
+  include Verisum::App::Utils
 
   def format_time_span2(span)
     format_time_span(span)
   end
 end
 
-describe CheckSum::App::Utils do
+describe Verisum::App::Utils do
   utils = TestUtilsClass.new
 
   it "formats time span less than a minute" do

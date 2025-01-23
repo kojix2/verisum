@@ -26,10 +26,10 @@ jobs:
       - name: Build executable
         run: shards build --release 
       - name: Run executable (help)
-        run: bin/checksum --help && bin/checksum --version
+        run: bin/verisum --help && bin/verisum --version
       - name: Run tests
         run: crystal spec
       - uses: actions/upload-artifact@v4
         with:
-          name: checksum-cli-${{ matrix.os }}
-          path: bin/${{ matrix.os == 'windows' && 'checksum.exe' || 'checksum' }}
+          name: verisum-cli-${{ matrix.os }}
+          path: bin/${{ matrix.os == 'windows' && 'verisum.exe' || 'verisum' }}

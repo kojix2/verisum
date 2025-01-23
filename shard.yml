@@ -1,11 +1,11 @@
-name: checksum
+name: verisum
 version: 0.1.7-rc2
 
 authors:
   - kojix2 <2xijok@gmail.com>
 
 targets:
-  checksum:
+  verisum:
     main: src/cli.cr
 
 license: MIT
