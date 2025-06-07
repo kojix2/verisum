@@ -12,13 +12,22 @@ module Verisum
       getter exit_code : Int32
 
       def self.run(option : Option, stdout : IO, stderr : IO) : Int32
-        new(option, stdout, stderr).run
+        computer = new(option)
+        computer.stdout = stdout
+        computer.stderr = stderr
+        computer.initialize_filenames
+        computer.run
       end
 
-      def initialize(@option : Option, @stdout : IO = STDOUT, @stderr : IO = STDERR)
+      def initialize(@option : Option)
         @exit_code = EXIT_SUCCESS
-        @filenames = FileNames.new(@option, @stdout, @stderr)
         @algorithm = option.algorithm || raise NoAlgorithmError.new
+        @filenames = FileNames.new(@option)
+      end
+
+      def initialize_filenames
+        @filenames.stdout = stdout
+        @filenames.stderr = stderr
       end
 
       def run : Int32

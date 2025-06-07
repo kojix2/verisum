@@ -3,12 +3,12 @@ module Verisum
     class FileNames
       include Redirect
 
-      def initialize(option : Option, @stdout : IO = STDOUT, @stderr : IO = STDERR)
+      def initialize(option : Option)
         @filenames = option.filenames
         @absolute_path = option.absolute_path?
       end
 
-      def each
+      def each(&)
         @filenames.each do |filename|
           if stdin_mark?(filename)
             yield "-"

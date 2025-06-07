@@ -18,10 +18,13 @@ module Verisum
       setter screen_width : Int32?
 
       def self.run(option : Option, stdout : IO, stderr : IO) : Int32
-        new(option, stdout, stderr).run
+        checker = new(option)
+        checker.stdout = stdout
+        checker.stderr = stderr
+        checker.run
       end
 
-      def initialize(@option : Option = Option.new, @stdout : IO = STDOUT, @stderr : IO = STDERR)
+      def initialize(@option : Option = Option.new)
         @exit_code = EXIT_SUCCESS
         @clear_flag = false
         @screen_width = nil
