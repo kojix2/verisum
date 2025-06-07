@@ -3,8 +3,7 @@ name: test
 on:
   push:
   pull_request:
-  schedule:
-    - cron: "51 3 * * 6" # Runs at 03:51, only on Saturday
+  workflow_dispatch:
 jobs:
   build:
     name: ${{ matrix.os }}
@@ -24,7 +23,7 @@ jobs:
       - name: Install dependencies
         run: shards install --without-development --release
       - name: Build executable
-        run: shards build --release 
+        run: shards build --release
       - name: Run executable (help)
         run: bin/verisum --help && bin/verisum --version
       - name: Run tests
