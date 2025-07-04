@@ -1,6 +1,7 @@
 # verisum
 
 [![test](https://github.com/kojix2/verisum/actions/workflows/test.yml/badge.svg)](https://github.com/kojix2/verisum/actions/workflows/test.yml)
+[![Lines of Code](https://img.shields.io/endpoint?url=https%3A%2F%2Ftokei.kojix2.net%2Fbadge%2Fgithub%2Fkojix2%2Fverisum%2Flines)](https://tokei.kojix2.net/github/kojix2/verisum)
 
 `verisum` makes the output of `md5sum -c` or `sha256sum -c` prettier.
 
