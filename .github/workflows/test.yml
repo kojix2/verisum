@@ -24,6 +24,9 @@ jobs:
         run: shards install --without-development --release
       - name: Build executable
         run: shards build --release
+      - name: Show dependent libraries (MacOS)
+        if: matrix.os == 'macos'
+        run: otool -L bin/verisum
       - name: Run executable (help)
         run: bin/verisum --help && bin/verisum --version
       - name: Run tests
