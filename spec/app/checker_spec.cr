@@ -48,6 +48,13 @@ describe Verisum::App::Checker do
       records.size.should eq NUM_FILES
     end
 
+    it "ignores empty or whitespace-only lines" do
+      checker = Verisum::App::Checker.new
+      records = checker.parse_checksum_file("spec/fixtures/md5_blank")
+      records.should be_a Array(Verisum::FileRecord)
+      records.size.should eq NUM_FILES
+    end
+
     it "raises an error when the file corrupt" do
       checker = Verisum::App::Checker.new
       checker.stderr = IO::Memory.new

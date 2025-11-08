@@ -83,7 +83,7 @@ module Verisum
       end
 
       private def parse_line(line : String) : FileRecord?
-        line = remove_bom(line)
+        return nil if line.strip.empty? # Skip empty lines
         return nil if line =~ /^\s*#/ # Skip comment lines
         match = line.match(/^([0-9a-zA-Z]+)\s+(.*)$/)
         raise ParseError.new(line) unless match

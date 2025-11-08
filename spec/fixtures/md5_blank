@@ -1,0 +1,12 @@
+# md5 with blank lines
+
+# First record after a blank line
+d41d8cd98f00b204e9800998ecf8427e  empty.txt
+   
+# Whitespace-only line above should be ignored
+emuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu  erroneous_emu.txt
+
+# Another blank line above
+e4d909c290d0fb1ca068ffaddf22cbd0  fox.txt
+77e083c843d00325d7f3e2bbb45d1598  lorem.txt
+00000000000000000000000000000000  missing.txt
