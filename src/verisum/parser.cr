@@ -1,25 +1,4 @@
 require "option_parser"
-
-# Customizable Indentation in OptionParser Help Messages
-# https://github.com/crystal-lang/crystal/issues/14153
-
-class OptionParser
-  property summary_width : Int32 = 32
-  property summary_indent : Int32 = 4
-
-  private def append_flag(flag, description)
-    base_indent = " " * summary_indent
-    description_indent = " " * (summary_width + summary_indent + 1) # Adjust the indent based on summary_width
-    description = description.gsub("\n", "\n#{description_indent}")
-
-    if flag.size >= summary_width
-      @flags << "#{base_indent}#{flag}\n#{description_indent}#{description}"
-    else
-      @flags << "#{base_indent}#{flag}#{" " * (summary_width - flag.size)}#{description}"
-    end
-  end
-end
-
 require "colorize"
 
 require "./option"
