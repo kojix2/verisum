@@ -36,14 +36,14 @@ jobs:
           docker exec alpine gzip bin/verisum
           docker exec alpine mv bin/verisum.gz bin/verisum-linux.gz
 
-      - name: Run Mac Build x64
-        if: matrix.os == 'macos'
-        run: |
-          shards install --without-development --release
-          shards build --release
-          chmod +x bin/verisum
-          gzip bin/verisum
-          mv bin/verisum.gz bin/verisum-macos.gz
+      # - name: Run Mac Build x64
+      #   if: matrix.os == 'macos'
+      #   run: |
+      #     shards install --without-development --release
+      #     shards build --release
+      #     chmod +x bin/verisum
+      #     gzip bin/verisum
+      #     mv bin/verisum.gz bin/verisum-macos.gz
 
       - name: Run Windows Build x64
         if: matrix.os == 'windows'
@@ -58,6 +58,5 @@ jobs:
         with:
           files: |
             bin/verisum-linux.gz
-            bin/verisum-macos.gz
             bin/verisum-windows.zip
             LICENSE.txt
