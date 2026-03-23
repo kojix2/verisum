@@ -16,7 +16,7 @@ jobs:
         include:
           - os: ubuntu-latest
             target: x86_64-unknown-linux-musl
-          - os: macos-13
+          - os: macos-15-intel
             target: x86_64-apple-darwin
           - os: macos-latest
             target: aarch64-apple-darwin
@@ -30,7 +30,6 @@ jobs:
           submodules: true
 
       - name: Install Crystal
-        if: matrix.target != 'x86_64-unknown-linux-musl'
         uses: crystal-lang/install-crystal@v1
         with:
           crystal: latest
@@ -47,14 +46,12 @@ jobs:
           echo "BIN=verisum" >> $GITHUB_ENV
 
       - name: Install dependencies
-        if: matrix.target != 'x86_64-unknown-linux-musl'
         run: shards install --without-development
 
       - name: Run tests
-        if: matrix.target != 'x86_64-unknown-linux-musl'
         run: crystal spec
 
-      - name: Build on Linux
+      - name: Build on Linux (musl)
         if: matrix.target == 'x86_64-unknown-linux-musl'
         shell: bash
         run: |
@@ -70,7 +67,7 @@ jobs:
           PKG=verisum-${VERSION}-${{ matrix.target }}
           mkdir -p $PKG
           cp bin/$BIN $PKG/
-          cp LICENSE $PKG/
+          cp LICENSE $PKG/LICENSE
           cp README.md $PKG/
           tar czf $PKG.tar.gz $PKG
 
@@ -79,20 +76,29 @@ jobs:
         shell: bash
         run: |
           shards install --without-development --release
-          shards build --release --static
+          brew install libgc pcre2 openssl@3
+          echo "PKG_CONFIG_PATH=$PKG_CONFIG_PATH"
+          unset PKG_CONFIG_PATH
+          echo "cleared PKG_CONFIG_PATH to avoid openSSL conflicts"
+          ln -s $(brew ls libgc | grep libgc.a) .
+          ln -s $(brew ls pcre2 | grep libpcre2-8.a) .
+          ln -s $(brew ls openssl@3 | grep libssl.a) .
+          ln -s $(brew ls openssl@3 | grep libcrypto.a) .
+          STATIC_LIBS="-L $(pwd) $(pwd)/libgc.a $(pwd)/libpcre2-8.a $(pwd)/libssl.a $(pwd)/libcrypto.a -Wl,-search_paths_first"
+          shards build --link-flags="$STATIC_LIBS" --release
           chmod +x bin/$BIN
           otool -L bin/$BIN
-          if otool -L bin/$BIN | grep -E '\.dylib|LibSystem'; then
-            echo "Checking macOS linking..."
-            # Note: Some system libraries are expected on macOS
+          if otool -L bin/$BIN | grep homebrew; then
+            echo "Error: Homebrew dependencies detected!"
+            exit 1
           fi
+          echo "Homebrew dependencies not detected. Build is portable."
           file bin/$BIN
           bin/$BIN --help
-          crystal spec
           PKG=verisum-${VERSION}-${{ matrix.target }}
           mkdir -p $PKG
           cp bin/$BIN $PKG/
-          cp LICENSE $PKG/
+          cp LICENSE $PKG/LICENSE
           cp README.md $PKG/
           tar czf $PKG.tar.gz $PKG
 
@@ -103,11 +109,10 @@ jobs:
           shards install --without-development --release
           shards build --release --static
           bin/verisum --help
-          crystal spec
           $pkg = "verisum-$env:VERSION-${{ matrix.target }}"
           mkdir $pkg
           Copy-Item "bin/$env:BIN.exe" "$pkg/"
-          Copy-Item "LICENSE" "$pkg/"
+          Copy-Item "LICENSE" "$pkg/LICENSE"
           Copy-Item "README.md" "$pkg/"
           Compress-Archive -Path "$pkg/*" -DestinationPath "$pkg.zip"
 
