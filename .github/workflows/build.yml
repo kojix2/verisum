@@ -1,0 +1,129 @@
+name: build
+
+on:
+  push:
+    branches: ["*"]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: build ${{ matrix.target }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-musl
+          - os: macos-13
+            target: x86_64-apple-darwin
+          - os: macos-latest
+            target: aarch64-apple-darwin
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          submodules: true
+
+      - name: Install Crystal
+        if: matrix.target != 'x86_64-unknown-linux-musl'
+        uses: crystal-lang/install-crystal@v1
+        with:
+          crystal: latest
+
+      - name: Set version variables
+        shell: bash
+        run: |
+          if [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            VERSION=${{ github.ref_name }}
+          else
+            VERSION="build-$(date +%Y%m%d-%H%M%S)"
+          fi
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "BIN=verisum" >> $GITHUB_ENV
+
+      - name: Install dependencies
+        if: matrix.target != 'x86_64-unknown-linux-musl'
+        run: shards install --without-development
+
+      - name: Run tests
+        if: matrix.target != 'x86_64-unknown-linux-musl'
+        run: crystal spec
+
+      - name: Build on Linux
+        if: matrix.target == 'x86_64-unknown-linux-musl'
+        shell: bash
+        run: |
+          mkdir -p bin
+          docker run -d --name alpine -v $(pwd):/workspace -w /workspace crystallang/crystal:latest-alpine tail -f /dev/null
+          docker exec alpine shards install --without-development --release --static
+          docker exec alpine shards build --release --static
+          docker exec alpine chmod +x bin/$BIN
+          docker exec alpine crystal spec
+          ldd bin/$BIN || echo "Static binary (no dynamic dependencies)"
+          file bin/$BIN
+          bin/$BIN --help
+          PKG=verisum-${VERSION}-${{ matrix.target }}
+          mkdir -p $PKG
+          cp bin/$BIN $PKG/
+          cp LICENSE $PKG/
+          cp README.md $PKG/
+          tar czf $PKG.tar.gz $PKG
+
+      - name: Build on macOS
+        if: startsWith(matrix.target, 'x86_64-apple-darwin') || startsWith(matrix.target, 'aarch64-apple-darwin')
+        shell: bash
+        run: |
+          shards install --without-development --release
+          shards build --release --static
+          chmod +x bin/$BIN
+          otool -L bin/$BIN
+          if otool -L bin/$BIN | grep -E '\.dylib|LibSystem'; then
+            echo "Checking macOS linking..."
+            # Note: Some system libraries are expected on macOS
+          fi
+          file bin/$BIN
+          bin/$BIN --help
+          crystal spec
+          PKG=verisum-${VERSION}-${{ matrix.target }}
+          mkdir -p $PKG
+          cp bin/$BIN $PKG/
+          cp LICENSE $PKG/
+          cp README.md $PKG/
+          tar czf $PKG.tar.gz $PKG
+
+      - name: Build on Windows (MSVC)
+        if: matrix.target == 'x86_64-pc-windows-msvc'
+        shell: pwsh
+        run: |
+          shards install --without-development --release
+          shards build --release --static
+          bin/verisum --help
+          crystal spec
+          $pkg = "verisum-$env:VERSION-${{ matrix.target }}"
+          mkdir $pkg
+          Copy-Item "bin/$env:BIN.exe" "$pkg/"
+          Copy-Item "LICENSE" "$pkg/"
+          Copy-Item "README.md" "$pkg/"
+          Compress-Archive -Path "$pkg/*" -DestinationPath "$pkg.zip"
+
+      - name: Upload artifacts (non-release)
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: verisum-${{ matrix.target }}
+          path: |
+            verisum-*.tar.gz
+            verisum-*.zip
+
+      - name: Upload release assets (release only)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            verisum-*.tar.gz
+            verisum-*.zip
