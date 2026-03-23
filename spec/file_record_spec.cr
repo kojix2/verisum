@@ -18,6 +18,11 @@ describe Verisum::FileRecord do
     record.guess_algorithm.should eq Verisum::Algorithm::MD5
   end
 
+  it "can guess the algorithm md5 from uppercase checksum" do
+    record = Verisum::FileRecord.new("D41D8CD98F00B204E9800998ECF8427E", Path["/path/to/file"])
+    record.guess_algorithm.should eq Verisum::Algorithm::MD5
+  end
+
   it "can guess the algorithm sha1 based on the checksum length" do
     record = Verisum::FileRecord.new("da39a3ee5e6b4b0d3255bfef95601890afd80709", Path["/path/to/file"])
     record.guess_algorithm.should eq Verisum::Algorithm::SHA1

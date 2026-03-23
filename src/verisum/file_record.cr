@@ -12,14 +12,7 @@ module Verisum
 
     # Returns the algorithm used to calculate the checksum based on the checksum pattern
     def guess_algorithm : Algorithm
-      case checksum
-      when /^[0-9a-f]{32}$/  then Algorithm::MD5
-      when /^[0-9a-f]{40}$/  then Algorithm::SHA1
-      when /^[0-9a-f]{64}$/  then Algorithm::SHA256
-      when /^[0-9a-f]{128}$/ then Algorithm::SHA512
-      else
-        raise UnknownAlgorithmError.new("Unknown algorithm for checksum: #{checksum}")
-      end
+      Algorithm.from_checksum(checksum)
     end
 
     # Return the string representation of the FileRecord

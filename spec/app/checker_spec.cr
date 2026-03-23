@@ -55,6 +55,36 @@ describe Verisum::App::Checker do
       records.size.should eq NUM_FILES
     end
 
+    it "accepts uppercase checksums for algorithm inference" do
+      checker = Verisum::App::Checker.new
+      file = File.tempfile("verisum-uppercase", ".txt")
+      begin
+        file.puts "D41D8CD98F00B204E9800998ECF8427E  empty.txt"
+        file.close
+
+        records = checker.parse_checksum_file(file.path)
+        records.size.should eq 1
+        records.first.guess_algorithm.should eq Verisum::Algorithm::MD5
+      ensure
+        file.delete
+      end
+    end
+
+    it "raises an error for unsupported checksum lengths" do
+      checker = Verisum::App::Checker.new
+      file = File.tempfile("verisum-invalid-length", ".txt")
+      begin
+        file.puts "d41d8cd98f00b204e9800998ecf8427ea  empty.txt"
+        file.close
+
+        expect_raises Verisum::ParseError do
+          checker.parse_checksum_file(file.path)
+        end
+      ensure
+        file.delete
+      end
+    end
+
     it "raises an error when the file corrupt" do
       checker = Verisum::App::Checker.new
       checker.stderr = IO::Memory.new
