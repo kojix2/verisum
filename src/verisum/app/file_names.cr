@@ -10,6 +10,9 @@ module Verisum
 
       def each(&)
         @filenames.each do |filename|
+          # The dash "-" is always interpreted as stdin, not as a literal filename.
+          # This is a standard convention across Unix tools (md5sum, sha256sum, etc.)
+          # and avoids platform-specific issues (e.g., "-" cannot be created as a filename on Windows).
           if stdin_mark?(filename)
             yield "-"
           else
