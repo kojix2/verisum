@@ -49,6 +49,8 @@ jobs:
             mingw-w64-x86_64-crystal
             mingw-w64-x86_64-shards
             mingw-w64-x86_64-binutils
+            mingw-w64-x86_64-openssl
+            mingw-w64-x86_64-pkgconf
             zip
 
       - name: Set version variables
@@ -78,7 +80,7 @@ jobs:
       - name: Run tests (MinGW64)
         if: matrix.target == 'x86_64-pc-windows-gnu'
         shell: msys2 {0}
-        run: crystal spec
+        run: crystal spec --link-flags="-lcrypto"
 
       - name: Build on Linux
         if: >-
@@ -112,13 +114,15 @@ jobs:
         run: |
           shards install --without-development --release
           brew update
-          brew install libgc pcre2
+          brew install libgc pcre2 openssl@3
           echo "PKG_CONFIG_PATH=$PKG_CONFIG_PATH"
           unset PKG_CONFIG_PATH
           echo "cleared PKG_CONFIG_PATH to avoid OpenSSL conflicts"
           ln -s $(brew ls libgc | grep libgc.a) .
           ln -s $(brew ls pcre2 | grep libpcre2-8.a) .
-          STATIC_LIBS="-L $(pwd) $(pwd)/libgc.a $(pwd)/libpcre2-8.a"
+          ln -s $(brew ls openssl@3 | grep libssl.a) .
+          ln -s $(brew ls openssl@3 | grep libcrypto.a) .
+          STATIC_LIBS="-L $(pwd) $(pwd)/libgc.a $(pwd)/libpcre2-8.a $(pwd)/libssl.a $(pwd)/libcrypto.a -Wl,-search_paths_first"
           shards build --link-flags="$STATIC_LIBS" --release --no-debug
           chmod +x bin/$BIN
           strip -x bin/$BIN
@@ -145,7 +149,7 @@ jobs:
           shards build --release --no-debug --static
           Write-Host "Using strip tool: llvm-strip"
           llvm-strip --strip-unneeded "bin/$env:BIN.exe"
-          bin/$env:BIN --help
+          & "bin/$env:BIN.exe" --help
           $pkg = "verisum-$env:VERSION-${{ matrix.target }}"
           mkdir $pkg
           Copy-Item "bin/$env:BIN.exe" "$pkg/"
@@ -158,7 +162,7 @@ jobs:
         shell: msys2 {0}
         run: |
           shards install --without-development --release
-          shards build --release --no-debug --static
+          shards build --release --no-debug --static --link-flags="-lcrypto"
           strip --strip-unneeded bin/$BIN.exe
           file bin/$BIN.exe
           bin/$BIN --help
