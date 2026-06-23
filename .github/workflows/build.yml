@@ -16,12 +16,16 @@ jobs:
         include:
           - os: ubuntu-latest
             target: x86_64-unknown-linux-musl
+          - os: ubuntu-24.04-arm
+            target: aarch64-unknown-linux-musl
           - os: macos-15-intel
             target: x86_64-apple-darwin
           - os: macos-latest
             target: aarch64-apple-darwin
           - os: windows-latest
             target: x86_64-pc-windows-msvc
+          - os: windows-latest
+            target: x86_64-pc-windows-gnu
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout code
@@ -30,9 +34,22 @@ jobs:
           submodules: true
 
       - name: Install Crystal
+        if: matrix.target != 'x86_64-pc-windows-gnu'
         uses: crystal-lang/install-crystal@v1
         with:
           crystal: latest
+
+      - name: Install Crystal (MinGW64)
+        if: matrix.target == 'x86_64-pc-windows-gnu'
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: >-
+            mingw-w64-x86_64-crystal
+            mingw-w64-x86_64-shards
+            mingw-w64-x86_64-binutils
+            zip
 
       - name: Set version variables
         shell: bash
@@ -46,28 +63,46 @@ jobs:
           echo "BIN=verisum" >> $GITHUB_ENV
 
       - name: Install dependencies
+        if: matrix.target != 'x86_64-pc-windows-gnu'
+        run: shards install --without-development
+
+      - name: Install dependencies (MinGW64)
+        if: matrix.target == 'x86_64-pc-windows-gnu'
+        shell: msys2 {0}
         run: shards install --without-development
 
       - name: Run tests
+        if: matrix.target != 'x86_64-pc-windows-gnu'
         run: crystal spec
 
-      - name: Build on Linux (musl)
-        if: matrix.target == 'x86_64-unknown-linux-musl'
+      - name: Run tests (MinGW64)
+        if: matrix.target == 'x86_64-pc-windows-gnu'
+        shell: msys2 {0}
+        run: crystal spec
+
+      - name: Build on Linux
+        if: >-
+          matrix.target == 'x86_64-unknown-linux-musl' ||
+          matrix.target == 'aarch64-unknown-linux-musl'
         shell: bash
         run: |
           mkdir -p bin
+          rm -f bin/$BIN
           docker run -d --name alpine -v $(pwd):/workspace -w /workspace crystallang/crystal:latest-alpine tail -f /dev/null
+          docker exec alpine apk add readline-dev readline-static ncurses-dev ncurses-static ncurses-libs binutils
           docker exec alpine shards install --without-development --release --static
-          docker exec alpine shards build --release --static
-          docker exec alpine chmod +x bin/$BIN
           docker exec alpine crystal spec
+          docker exec alpine shards build --release --no-debug --static
+          docker exec alpine chmod +x bin/$BIN
+          docker exec alpine strip --strip-unneeded bin/$BIN
+          test -x bin/$BIN
           ldd bin/$BIN || echo "Static binary (no dynamic dependencies)"
           file bin/$BIN
           bin/$BIN --help
           PKG=verisum-${VERSION}-${{ matrix.target }}
           mkdir -p $PKG
           cp bin/$BIN $PKG/
-          cp LICENSE $PKG/LICENSE
+          cp LICENSE $PKG/
           cp README.md $PKG/
           tar czf $PKG.tar.gz $PKG
 
@@ -76,29 +111,29 @@ jobs:
         shell: bash
         run: |
           shards install --without-development --release
-          brew install libgc pcre2 openssl@3
+          brew update
+          brew install libgc pcre2
           echo "PKG_CONFIG_PATH=$PKG_CONFIG_PATH"
           unset PKG_CONFIG_PATH
-          echo "cleared PKG_CONFIG_PATH to avoid openSSL conflicts"
+          echo "cleared PKG_CONFIG_PATH to avoid OpenSSL conflicts"
           ln -s $(brew ls libgc | grep libgc.a) .
           ln -s $(brew ls pcre2 | grep libpcre2-8.a) .
-          ln -s $(brew ls openssl@3 | grep libssl.a) .
-          ln -s $(brew ls openssl@3 | grep libcrypto.a) .
-          STATIC_LIBS="-L $(pwd) $(pwd)/libgc.a $(pwd)/libpcre2-8.a $(pwd)/libssl.a $(pwd)/libcrypto.a -Wl,-search_paths_first"
-          shards build --link-flags="$STATIC_LIBS" --release
+          STATIC_LIBS="-L $(pwd) $(pwd)/libgc.a $(pwd)/libpcre2-8.a"
+          shards build --link-flags="$STATIC_LIBS" --release --no-debug
           chmod +x bin/$BIN
+          strip -x bin/$BIN
           otool -L bin/$BIN
           if otool -L bin/$BIN | grep homebrew; then
             echo "Error: Homebrew dependencies detected!"
             exit 1
           fi
-          echo "Homebrew dependencies not detected. Build is portable."
+          echo "Static linking successful"
           file bin/$BIN
           bin/$BIN --help
           PKG=verisum-${VERSION}-${{ matrix.target }}
           mkdir -p $PKG
           cp bin/$BIN $PKG/
-          cp LICENSE $PKG/LICENSE
+          cp LICENSE $PKG/
           cp README.md $PKG/
           tar czf $PKG.tar.gz $PKG
 
@@ -107,14 +142,32 @@ jobs:
         shell: pwsh
         run: |
           shards install --without-development --release
-          shards build --release --static
-          bin/verisum --help
+          shards build --release --no-debug --static
+          Write-Host "Using strip tool: llvm-strip"
+          llvm-strip --strip-unneeded "bin/$env:BIN.exe"
+          bin/$env:BIN --help
           $pkg = "verisum-$env:VERSION-${{ matrix.target }}"
           mkdir $pkg
           Copy-Item "bin/$env:BIN.exe" "$pkg/"
-          Copy-Item "LICENSE" "$pkg/LICENSE"
+          Copy-Item "LICENSE" "$pkg/"
           Copy-Item "README.md" "$pkg/"
           Compress-Archive -Path "$pkg/*" -DestinationPath "$pkg.zip"
+
+      - name: Build on Windows (MinGW64)
+        if: matrix.target == 'x86_64-pc-windows-gnu'
+        shell: msys2 {0}
+        run: |
+          shards install --without-development --release
+          shards build --release --no-debug --static
+          strip --strip-unneeded bin/$BIN.exe
+          file bin/$BIN.exe
+          bin/$BIN --help
+          PKG=verisum-${VERSION}-${{ matrix.target }}
+          mkdir -p $PKG
+          cp bin/$BIN.exe $PKG/
+          cp LICENSE $PKG/
+          cp README.md $PKG/
+          zip -r $PKG.zip $PKG
 
       - name: Upload artifacts (non-release)
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
