@@ -61,13 +61,17 @@ module Verisum
         @option.verbose = true
       end
 
+      @opt.on("-C", "--chdir DIR", "Change working directory before processing") do |dir|
+        @option.base_dir = dir
+      end
+
       @option.clear_line = false unless STDOUT.tty?
       @opt.on("-N", "--no-clear", "Do not clear the line after output [false]") do
         @option.clear_line = false
       end
 
       Colorize.on_tty_only! # [auto]
-      @opt.on("-C", "--color WHEN", "When to use color (auto|always|never) [auto]") do |when_|
+      @opt.on("--color WHEN", "When to use color (auto|always|never) [auto]") do |when_|
         case when_
         when "auto"
           Colorize.on_tty_only!

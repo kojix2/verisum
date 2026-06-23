@@ -13,6 +13,13 @@ describe Verisum::App do
       e = app.run(["spec/fixtures/md5_correct"])
       e.should eq 0
     end
+
+    it "sets the base directory with -C" do
+      app = Verisum::App.new
+      app.stdout = IO::Memory.new
+      e = app.run(["-C", "spec", "fixtures/md5_correct"])
+      e.should eq 0
+    end
   end
 
   describe "Exit code for abnormal termination" do

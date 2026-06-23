@@ -32,10 +32,17 @@ module Verisum
     def run(argv = ARGV) : Int32
       @option = parser.parse(argv)
       case option.action
-      when Action::Compute
-        Computer.run(option, stdout, stderr)
-      when Action::Check
-        Checker.run(option, stdout, stderr)
+      when Action::Compute, Action::Check
+        Dir.cd(option.base_dir) do
+          case option.action
+          when Action::Compute
+            Computer.run(option, stdout, stderr)
+          when Action::Check
+            Checker.run(option, stdout, stderr)
+          else
+            EXIT_FAILURE
+          end
+        end
       when Action::Version
         print_version(stdout); EXIT_SUCCESS
       when Action::Help

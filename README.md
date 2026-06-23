@@ -37,7 +37,8 @@ brew install kojix2/brew/verisum
     -a, --algorithm ALGORITHM        (md5|sha1|sha256|sha512)
     -A, --absolute                   Output absolute path [false]
     -v, --verbose                    Output checksums and errors, etc [false]
-    -C, --color WHEN                 when to use color (auto|always|never) [auto]
+    -C, --chdir DIR                  Change working directory before processing
+    --color WHEN                     when to use color (auto|always|never) [auto]
     -D, --debug                      Print a backtrace on error
     -h, --help                       Show this message
     -V, --version                    Show version

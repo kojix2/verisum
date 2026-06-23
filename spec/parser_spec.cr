@@ -60,28 +60,40 @@ describe Verisum::Parser do
     option.clear_line?.should be_false
   end
 
-  it "parses the -C flag with auto" do
+  it "parses the -C flag for base directory" do
     parser = Verisum::Parser.new
-    parser.parse(["-C", "auto", "file"])
+    option = parser.parse(["-C", "spec", "file"])
+    option.base_dir.should eq "spec"
+  end
+
+  it "parses the --chdir option for base directory" do
+    parser = Verisum::Parser.new
+    option = parser.parse(["--chdir", "spec", "file"])
+    option.base_dir.should eq "spec"
+  end
+
+  it "parses --color with auto" do
+    parser = Verisum::Parser.new
+    parser.parse(["--color", "auto", "file"])
     Colorize.enabled?.should eq STDOUT.tty?
   end
 
-  it "parses the -C flag with always" do
+  it "parses --color with always" do
     parser = Verisum::Parser.new
-    parser.parse(["-C", "always", "file"])
+    parser.parse(["--color", "always", "file"])
     Colorize.enabled?.should be_true
   end
 
-  it "parses the -C flag with never" do
+  it "parses --color with never" do
     parser = Verisum::Parser.new
-    parser.parse(["-C", "never", "file"])
+    parser.parse(["--color", "never", "file"])
     Colorize.enabled?.should be_false
   end
 
   it "raises an error for invalid color mode" do
     parser = Verisum::Parser.new
     expect_raises ArgumentError do
-      parser.parse(["-C", "invalid", "file"])
+      parser.parse(["--color", "invalid", "file"])
     end
   end
 
