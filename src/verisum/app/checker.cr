@@ -92,9 +92,8 @@ module Verisum
         sum = match[1]
         path = match[2]
         # Keep accepted checksum lengths in Algorithm so new digests only need one update point.
+        # (sum is already guaranteed to be [0-9a-zA-Z]+ by the match above.)
         raise ParseError.new(line) unless Algorithm.valid_hex_length?(sum.size)
-        # validate checksum content
-        raise ParseError.new(line) unless sum =~ /^[0-9a-zA-Z]+$/
         FileRecord.new(sum, Path[path])
       rescue
         raise ParseError.new(line)
