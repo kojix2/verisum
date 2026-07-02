@@ -33,6 +33,8 @@ module Verisum
       @option = parser.parse(argv)
       case option.action
       when Action::Compute, Action::Check
+        resolve_check_files_from_invocation_dir if option.action == Action::Check && option.chdir?
+
         Dir.cd(option.base_dir) do
           case option.action
           when Action::Compute
@@ -54,6 +56,12 @@ module Verisum
       stderr.puts "[verisum] ERROR: #{ex.class} #{ex.message}".colorize(:red).bold
       stderr.puts "\n#{ex.backtrace.join("\n")}" if VerisumError.debug?
       EXIT_FAILURE
+    end
+
+    private def resolve_check_files_from_invocation_dir : Nil
+      option.filenames = option.filenames.map do |filename|
+        filename == "-" ? filename : File.expand_path(filename)
+      end
     end
   end
 end

@@ -17,7 +17,7 @@ describe Verisum::App do
     it "sets the base directory with -C" do
       app = Verisum::App.new
       app.stdout = IO::Memory.new
-      e = app.run(["-C", "spec", "fixtures/md5_correct"])
+      e = app.run(["-C", "spec/fixtures", "spec/fixtures/md5_correct"])
       e.should eq 0
     end
   end

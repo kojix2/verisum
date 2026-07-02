@@ -63,6 +63,7 @@ module Verisum
 
       @opt.on("-C", "--chdir DIR", "Change working directory before processing") do |dir|
         @option.base_dir = dir
+        @option.chdir = true
       end
 
       @option.clear_line = false unless STDOUT.tty?

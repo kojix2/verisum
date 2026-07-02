@@ -57,7 +57,8 @@ module Verisum
 
         results = nil
         elapsed_time = Time.measure do
-          Dir.cd(File.dirname(filename)) do
+          verify_dir = option.chdir? || filename == "-" ? "." : File.dirname(filename)
+          Dir.cd(verify_dir) do
             results = verify_checksums(records, algorithm)
           end
         end
@@ -183,7 +184,11 @@ module Verisum
 
         case type
         when :error
-          print_error_message(filepath, index, total, error.not_nil!)
+          if error
+            print_error_message(filepath, index, total, error)
+          else
+            raise "Missing error for failed verification"
+          end
         when :pass
           print_ok_message(filepath, index, total)
         when :mismatch
