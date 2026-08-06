@@ -248,10 +248,12 @@ module Verisum
         print filepath
 
         # Check if the file is very small or empty
-        if File.size(filepath) < 100
+        file_size = File.size(filepath)
+        if file_size < 100
           print "\t"
-          puts "(#{File.size(filepath)} bytes)".colorize(:dark_gray)
+          print "(#{file_size} bytes)".colorize(:dark_gray)
         end
+        puts
 
         if option.verbose?
           puts " expected: #{expected_hash_value}".colorize(:dark_gray)

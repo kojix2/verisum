@@ -172,8 +172,26 @@ describe Verisum::App::Checker do
       checker.print_mismatch_message(__FILE__, 1, NUM_FILES, "expected_hash", "actual_hash")
       output = checker.stdout.to_s
       output.should contain "Mismatch".colorize(:red).to_s
-      output.should contain "expected: expected_hash"
-      output.should contain "actual:   actual_hash"
+      lines = output.lines
+      lines.size.should eq 3
+      lines[0].should contain __FILE__
+      lines[1].should contain "expected: expected_hash"
+      lines[2].should contain "actual:   actual_hash"
+    end
+
+    it "puts consecutive mismatch messages on separate lines" do
+      checker = Verisum::App::Checker.new
+      checker.stdout = IO::Memory.new
+
+      checker.print_mismatch_message(__FILE__, 0, 2, "expected_hash_1", "actual_hash_1")
+      checker.print_mismatch_message(__FILE__, 1, 2, "expected_hash_2", "actual_hash_2")
+
+      output = checker.stdout.to_s
+      output.ends_with?('\n').should be_true
+      lines = output.lines
+      lines.size.should eq 2
+      lines[0].should contain "(1/2)"
+      lines[1].should contain "(2/2)"
     end
 
     it "prints error message for file not found" do
