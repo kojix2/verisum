@@ -71,11 +71,11 @@ module Verisum
         @option.clear_line = false
       end
 
-      Colorize.on_tty_only! # [auto]
+      Colorize.enabled = Colorize.default_enabled?(STDOUT, STDERR) # [auto]
       @opt.on("--color WHEN", "When to use color (auto|always|never) [auto]") do |when_|
         case when_
         when "auto"
-          Colorize.on_tty_only!
+          Colorize.enabled = Colorize.default_enabled?(STDOUT, STDERR)
         when "always"
           Colorize.enabled = true
         when "never"

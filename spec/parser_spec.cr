@@ -75,7 +75,7 @@ describe Verisum::Parser do
   it "parses --color with auto" do
     parser = Verisum::Parser.new
     parser.parse(["--color", "auto", "file"])
-    Colorize.enabled?.should eq STDOUT.tty?
+    Colorize.enabled?.should eq Colorize.default_enabled?(STDOUT, STDERR)
   end
 
   it "parses --color with always" do
