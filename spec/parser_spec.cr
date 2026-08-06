@@ -16,9 +16,9 @@ describe Verisum::Parser do
     parser.help_message(io)
     io.rewind
     msg = io.gets_to_end
-    msg.should contain("Program:")
-    msg.should contain("Version:")
-    msg.should contain("Usage:")
+    msg.should contain("\n  Program:")
+    msg.should contain("\n  Version:")
+    msg.should contain("\n  Usage:")
     msg.should contain("-N, --no-clear")
     msg.should contain("-h, --help")
   end

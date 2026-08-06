@@ -21,17 +21,17 @@ module Verisum
       @opt.summary_width = 23
       @opt.banner = <<-BANNER
 
-        Program: verisum
-        Version: #{VERSION}
-        Source:  #{SOURCE}
+          Program: verisum
+          Version: #{VERSION}
+          Source:  #{SOURCE}
 
-        Usage: verisum [options] [files ...]
+          Usage: verisum [options] [files ...]
 
-        Arguments:
-          [files...] File(s). Use a dash ('-') to read from standard input.
+          Arguments:
+            [files...] File(s). Use a dash ('-') to read from standard input.
 
-        Options;
-      BANNER
+          Options;
+        BANNER
 
       @opt.on("-c", "--calc", "Compute checksums") do
         @option.action = Action::Compute

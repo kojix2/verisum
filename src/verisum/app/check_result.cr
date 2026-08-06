@@ -33,10 +33,10 @@ module Verisum
       end
 
       def ==(other : self)
-        (self.total == other.total) &&
-          (self.pass == other.pass) &&
-          (self.mismatch == other.mismatch) &&
-          (self.error == other.error)
+        (total == other.total) &&
+          (pass == other.pass) &&
+          (mismatch == other.mismatch) &&
+          (error == other.error)
       end
     end
   end
