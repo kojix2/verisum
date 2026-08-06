@@ -5,10 +5,6 @@
 
 `verisum` makes the output of `md5sum -c` or `sha256sum -c` prettier.
 
-![screenshot](https://github.com/user-attachments/assets/453701b9-19ec-4409-99f2-4e0fb638df4c)
-
-Verifying MD5 of 100,000 images from "[たっぷり素材PIXTA](https://www.sourcenext.com/product/pixta/)"
-
 ## Installation
 
 You can download pre-compiled binaries from [GitHub Release](https://github.com/kojix2/verisum.cr/releases).
